@@ -4,8 +4,6 @@ import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.net.URLCodec;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -13,8 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.net.URLDecoder;
 import java.util.Date;
 
 public class CollectionAPI extends SwordAPIEndpoint {
@@ -120,7 +120,7 @@ public class CollectionAPI extends SwordAPIEndpoint {
 
             // According to http://www.ietf.org/rfc/rfc5023.txt Section 9.7.1 The Slug must be the percent encoded
             // UTF-8 byte sequence of the text to use as the value.
-            String slug = new URLCodec("UTF-8").decode(req.getHeader("Slug"));
+            String slug = URLDecoder.decode(req.getHeader("Slug"), StandardCharsets.UTF_8);
             boolean inProgress = this.getInProgress(req);
 
             deposit = new Deposit();
@@ -195,7 +195,8 @@ public class CollectionAPI extends SwordAPIEndpoint {
             // need to throw a 403 Forbidden
             resp.sendError(403);
         }
-        catch (DecoderException e) {
+        /** Thrown in case {@link #post} receives a "slug" with illegally encoded characters */
+        catch (IllegalArgumentException e) {
             throw new ServletException(e);
         }
         finally {

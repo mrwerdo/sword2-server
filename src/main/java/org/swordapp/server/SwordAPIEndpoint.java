@@ -5,7 +5,6 @@ import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.parser.Parser;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -20,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -112,7 +112,7 @@ public class SwordAPIEndpoint {
         }
 
         // get the username and password out of the base64 encoded Basic auth string
-        String unencodedCreds = new String(Base64.decodeBase64(authBits[1].trim().getBytes()));
+        String unencodedCreds = new String(Base64.getDecoder().decode(authBits[1].trim().getBytes()));
         String[] userPass = unencodedCreds.split(":", 2);
 
         // did we get a username and password?
