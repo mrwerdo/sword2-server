@@ -1,6 +1,7 @@
 package org.swordapp.server.servlets;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.swordapp.server.ContainerAPI;
 import org.swordapp.server.ContainerManager;
 import org.swordapp.server.StatementAPI;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ContainerServletDefault extends SwordServlet {
-    private static Logger log = Logger.getLogger(ContainerServletDefault.class);
+    private static Logger log = LoggerFactory.getLogger(ContainerServletDefault.class);
 
     private ContainerManager cm;
     private ContainerAPI api;

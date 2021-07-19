@@ -1,6 +1,7 @@
 package org.swordapp.server;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class StatementAPI extends SwordAPIEndpoint {
-    private static Logger log = Logger.getLogger(CollectionAPI.class);
+    private static Logger log = LoggerFactory.getLogger(CollectionAPI.class);
 
     private StatementManager sm;
 

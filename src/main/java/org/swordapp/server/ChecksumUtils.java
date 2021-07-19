@@ -9,7 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class that holds Checksum related methods.
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public class ChecksumUtils {
     /** Logger */
-    private static Logger log = Logger.getLogger(ChecksumUtils.class);
+    private static Logger log = LoggerFactory.getLogger(ChecksumUtils.class);
 
     /**
      * Generate an MD5 hash for the file that is specified in the filepath. The hash is returned as a String representation.

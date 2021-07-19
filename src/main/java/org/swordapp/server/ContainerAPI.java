@@ -3,7 +3,8 @@ package org.swordapp.server;
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class ContainerAPI extends SwordAPIEndpoint {
-    private static Logger log = Logger.getLogger(ContainerAPI.class);
+    private static Logger log = LoggerFactory.getLogger(ContainerAPI.class);
 
     private ContainerManager cm;
     private StatementManager sm;

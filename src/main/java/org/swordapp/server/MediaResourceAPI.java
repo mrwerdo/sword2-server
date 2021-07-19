@@ -3,7 +3,8 @@ package org.swordapp.server;
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MediaResourceAPI extends SwordAPIEndpoint {
-    private static Logger log = Logger.getLogger(MediaResourceAPI.class);
+    private static Logger log = LoggerFactory.getLogger(MediaResourceAPI.class);
 
     protected MediaResourceManager mrm;
 

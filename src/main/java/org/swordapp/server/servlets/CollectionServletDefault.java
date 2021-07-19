@@ -1,6 +1,7 @@
 package org.swordapp.server.servlets;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.swordapp.server.CollectionAPI;
 import org.swordapp.server.CollectionDepositManager;
 import org.swordapp.server.CollectionListManager;
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CollectionServletDefault extends SwordServlet {
-    private static Logger log = Logger.getLogger(CollectionServletDefault.class);
+    private static Logger log = LoggerFactory.getLogger(CollectionServletDefault.class);
 
     protected CollectionListManager clm = null;
     protected CollectionDepositManager cdm;

@@ -1,6 +1,7 @@
 package org.swordapp.server.servlets;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.swordapp.server.MediaResourceAPI;
 import org.swordapp.server.MediaResourceManager;
 import org.swordapp.server.SwordConfiguration;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class MediaResourceServletDefault extends SwordServlet {
-    private static Logger log = Logger.getLogger(MediaResourceServletDefault.class);
+    private static Logger log = LoggerFactory.getLogger(MediaResourceServletDefault.class);
 
     protected MediaResourceManager mrm;
     protected MediaResourceAPI api;

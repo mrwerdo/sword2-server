@@ -6,10 +6,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StatementServletDefault extends SwordServlet {
-    private static Logger log = Logger.getLogger(StatementServletDefault.class);
+    private static Logger log = LoggerFactory.getLogger(StatementServletDefault.class);
 
     private StatementManager sm;
     private StatementAPI statementApi;

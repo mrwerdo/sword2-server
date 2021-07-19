@@ -12,7 +12,8 @@ import org.apache.commons.fileupload.ParameterParser;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ import java.util.UUID;
 public class SwordAPIEndpoint {
     protected SwordConfiguration config;
 
-    private static Logger log = Logger.getLogger(SwordAPIEndpoint.class);
+    private static Logger log = LoggerFactory.getLogger(SwordAPIEndpoint.class);
 
     protected SwordAPIEndpoint(SwordConfiguration config) {
         this.config = config;
@@ -101,7 +102,7 @@ public class SwordAPIEndpoint {
 
         // Auth header doesn't have 2 parts (Basic, [base 64 username/password])?
         if (authBits.length != 2) {
-            log.fatal("Malformed Authorization header");
+            log.error("Malformed Authorization header");
             throw new SwordAuthException("Malformed Authorization header");
         }
 
@@ -117,7 +118,7 @@ public class SwordAPIEndpoint {
 
         // did we get a username and password?
         if (userPass.length != 2) {
-            log.fatal("Malformed Authorization header; unable to determine username/password boundary");
+            log.error("Malformed Authorization header; unable to determine username/password boundary");
             throw new SwordAuthException("Malformed Authorization header; unable to determine username/password boundary");
         }
 

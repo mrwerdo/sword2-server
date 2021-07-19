@@ -4,7 +4,8 @@ import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import java.net.URLDecoder;
 import java.util.Date;
 
 public class CollectionAPI extends SwordAPIEndpoint {
-    private static Logger log = Logger.getLogger(CollectionAPI.class);
+    private static Logger log = LoggerFactory.getLogger(CollectionAPI.class);
 
     protected CollectionListManager clm = null;
     protected CollectionDepositManager cdm;
