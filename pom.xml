@@ -16,11 +16,11 @@
         
         <!-- Dependency versions -->
         <servlet-api.version>4.0.4</servlet-api.version>
-        <slf4j.version>1.7.31</slf4j.version>
         <abdera.version>1.1.3</abdera.version>
+        <fileupload.version>1.4</fileupload.version>
         <jena.version>2.6.4</jena.version>
         <xom.version>1.3.7</xom.version>
-        <fileupload.version>1.4</fileupload.version>
+        <slf4j.version>1.7.31</slf4j.version>
     
         <!-- Official Maven Plugins -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -81,7 +81,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.abdera</groupId>
-            <artifactId>abdera-client</artifactId>
+            <artifactId>abdera-core</artifactId>
+            <version>${abdera.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.abdera</groupId>
+            <artifactId>abdera-i18n</artifactId>
             <version>${abdera.version}</version>
         </dependency>
         <dependency>
