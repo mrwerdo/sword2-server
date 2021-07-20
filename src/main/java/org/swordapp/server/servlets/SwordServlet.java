@@ -6,9 +6,10 @@ import org.swordapp.server.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import java.lang.reflect.Constructor;
 
 public class SwordServlet extends HttpServlet {
-    private static Logger log = LoggerFactory.getLogger(SwordServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(SwordServlet.class);
 
     protected SwordConfiguration config;
 
@@ -28,7 +29,19 @@ public class SwordServlet extends HttpServlet {
             }
         } else {
             try {
-                Object obj = Class.forName(className).newInstance();
+                // get public, zero args constructor of implementing class
+                Constructor<?>[] constructors = Class.forName(className).getConstructors();
+                Constructor<?> zeroConstructor = null;
+                for (Constructor<?> i : constructors) {
+                    if (i.getParameterCount() == 0) {
+                        zeroConstructor = i;
+                        break;
+                    }
+                }
+                if (zeroConstructor == null)
+                    throw new IllegalArgumentException("Cannot find a public zero args constructor.");
+                
+                Object obj = zeroConstructor.newInstance();
                 log.info("Using " + className + " as '" + paramName + "'");
                 return obj;
             }
