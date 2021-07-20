@@ -5,6 +5,7 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Serializer;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,31 +22,31 @@ public class ErrorDocument {
     private String verboseDescription = null;
     private int status;
 
-    public ErrorDocument(String errorUri) {
+    public ErrorDocument(final String errorUri) {
         this(errorUri, -1, null, null);
     }
 
-    public ErrorDocument(String errorUri, int status) {
+    public ErrorDocument(final String errorUri, final int status) {
         this(errorUri, status, null, null);
     }
 
-    public ErrorDocument(String errorUri, String verboseDescription) {
+    public ErrorDocument(final String errorUri, final String verboseDescription) {
         this(errorUri, -1, null, verboseDescription);
     }
 
-    public ErrorDocument(String errorUri, int status, String verboseDescription) {
+    public ErrorDocument(final String errorUri, final int status, final String verboseDescription) {
         this(errorUri, status, null, verboseDescription);
     }
 
-    public ErrorDocument(String errorUri, int status, String summary, String verboseDescription) {
+    public ErrorDocument(final String errorUri, final int status, final String summary, final String verboseDescription) {
         // set up the error codes mapping
-        this.errorCodes.put(UriRegistry.ERROR_BAD_REQUEST, 400); // bad request
-        this.errorCodes.put(UriRegistry.ERROR_CHECKSUM_MISMATCH, 412); // precondition failed
-        this.errorCodes.put(UriRegistry.ERROR_CONTENT, 415); // unsupported media type
-        this.errorCodes.put(UriRegistry.ERROR_MEDIATION_NOT_ALLOWED, 412); // precondition failed
-        this.errorCodes.put(UriRegistry.ERROR_METHOD_NOT_ALLOWED, 405); // method not allowed
-        this.errorCodes.put(UriRegistry.ERROR_TARGET_OWNER_UNKNOWN, 403); // forbidden
-        this.errorCodes.put(UriRegistry.ERROR_MAX_UPLOAD_SIZE_EXCEEDED, 413); // forbidden
+        this.errorCodes.put(UriRegistry.ERROR_BAD_REQUEST, HttpServletResponse.SC_BAD_REQUEST); // bad request
+        this.errorCodes.put(UriRegistry.ERROR_CHECKSUM_MISMATCH, HttpServletResponse.SC_PRECONDITION_FAILED); // precondition failed
+        this.errorCodes.put(UriRegistry.ERROR_CONTENT, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE); // unsupported media type
+        this.errorCodes.put(UriRegistry.ERROR_MEDIATION_NOT_ALLOWED, HttpServletResponse.SC_PRECONDITION_FAILED); // precondition failed
+        this.errorCodes.put(UriRegistry.ERROR_METHOD_NOT_ALLOWED, HttpServletResponse.SC_METHOD_NOT_ALLOWED); // method not allowed
+        this.errorCodes.put(UriRegistry.ERROR_TARGET_OWNER_UNKNOWN, HttpServletResponse.SC_FORBIDDEN); // forbidden
+        this.errorCodes.put(UriRegistry.ERROR_MAX_UPLOAD_SIZE_EXCEEDED, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE); // forbidden
 
         this.errorUri = errorUri;
         this.summary = summary;
@@ -61,11 +62,11 @@ public class ErrorDocument {
         if (errorUri != null && this.errorCodes.containsKey(errorUri)) {
             return this.errorCodes.get(errorUri);
         } else {
-            return 400; // bad request
+            return HttpServletResponse.SC_BAD_REQUEST; // bad request
         }
     }
 
-    public void writeTo(Writer out, SwordConfiguration config) throws IOException, SwordServerException {
+    public void writeTo(final Writer out, final SwordConfiguration config) throws IOException, SwordServerException {
         // do the XML serialisation
         Element error = new Element("sword:error", UriRegistry.SWORD_TERMS_NAMESPACE);
         error.addAttribute(new Attribute("href", this.errorUri));
@@ -122,8 +123,7 @@ public class ErrorDocument {
             Serializer serializer = new Serializer(baos, "ISO-8859-1");
             serializer.write(doc);
             out.write(baos.toString());
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             throw new SwordServerException(e);
         }
     }

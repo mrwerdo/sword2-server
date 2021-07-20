@@ -2,7 +2,6 @@ package org.swordapp.server.servlets;
 
 import org.swordapp.server.ServiceDocumentAPI;
 import org.swordapp.server.ServiceDocumentManager;
-import org.swordapp.server.SwordConfiguration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,7 @@ public class ServiceDocumentServletDefault extends SwordServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         this.api.get(req, resp);
     }
 }

@@ -22,13 +22,13 @@ public class SwordWorkspace {
         return workspace;
     }
 
-    public void addCollection(SwordCollection collection) {
+    public void addCollection(final SwordCollection collection) {
         // FIXME: or should collections be managed internally until getAbderaWorkspace is called
         Collection abderaCollection = collection.getAbderaCollection();
         this.workspace.addCollection(abderaCollection);
     }
 
-    public Text setTitle(String title) {
+    public Text setTitle(final String title) {
         return this.workspace.setTitle(title);
     }
 }

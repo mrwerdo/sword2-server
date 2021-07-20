@@ -87,11 +87,11 @@ public class SwordCollection {
         return abderaCollection;
     }
 
-    public void setLocation(String href) {
+    public void setLocation(final String href) {
         this.collection.setHref(href);
     }
 
-    public void setAbstract(String dcAbstract) {
+    public void setAbstract(final String dcAbstract) {
         this.dcAbstract = dcAbstract;
     }
 
@@ -99,31 +99,31 @@ public class SwordCollection {
         return subServices;
     }
 
-    public void setSubServices(List<IRI> subServices) {
+    public void setSubServices(final List<IRI> subServices) {
         this.subServices = subServices;
     }
 
-    public void addSubService(IRI subService) {
+    public void addSubService(final IRI subService) {
         this.subServices.add(subService);
     }
 
-    public void setCollectionPolicy(String collectionPolicy) {
+    public void setCollectionPolicy(final String collectionPolicy) {
         this.collectionPolicy = collectionPolicy;
     }
 
-    public void setMediation(boolean mediation) {
+    public void setMediation(final boolean mediation) {
         this.mediation = mediation;
     }
 
-    public void setTreatment(String treatment) {
+    public void setTreatment(final String treatment) {
         this.treatment = treatment;
     }
 
-    public void setAcceptPackaging(List<String> acceptPackaging) {
+    public void setAcceptPackaging(final List<String> acceptPackaging) {
         this.acceptPackaging = acceptPackaging;
     }
 
-    public void addAcceptPackaging(String acceptPackaging) {
+    public void addAcceptPackaging(final String acceptPackaging) {
         this.acceptPackaging.add(acceptPackaging);
     }
 
@@ -143,15 +143,15 @@ public class SwordCollection {
         return acceptPackaging;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.collection.setTitle(title);
     }
 
-    public void setHref(String href) {
+    public void setHref(final String href) {
         this.collection.setHref(href);
     }
 
-    public void setAccept(String... mediaRanges) {
+    public void setAccept(final String... mediaRanges) {
         this.collection.setAccept(mediaRanges);
     }
 
@@ -163,11 +163,11 @@ public class SwordCollection {
         this.collection.setAcceptsNothing();
     }
 
-    public void addAccepts(String mediaRange) {
+    public void addAccepts(final String mediaRange) {
         this.collection.addAccepts(mediaRange);
     }
 
-    public void addAccepts(String... mediaRanges) {
+    public void addAccepts(final String... mediaRanges) {
         this.collection.addAccepts(mediaRanges);
     }
 
@@ -175,23 +175,23 @@ public class SwordCollection {
         this.collection.addAcceptsEntry();
     }
 
-    public void setMultipartAccept(String... mediaRanges) {
+    public void setMultipartAccept(final String... mediaRanges) {
         List<String> mrs = Arrays.asList(mediaRanges);
         this.multipartAccept.clear();
         this.multipartAccept.addAll(mrs);
     }
 
-    public void addMultipartAccepts(String mediaRange) {
+    public void addMultipartAccepts(final String mediaRange) {
         this.multipartAccept.add(mediaRange);
     }
 
-    public void addMultipartAccepts(String... mediaRanges) {
+    public void addMultipartAccepts(final String... mediaRanges) {
         List<String> mrs = Arrays.asList(mediaRanges);
         this.multipartAccept.addAll(mrs);
     }
 
     public List<String> getMultipartAccept() {
-        List<String> accepts = new ArrayList<String>();
+        List<String> accepts = new ArrayList<>();
         List<Element> elements = this.collection.getElements();
         boolean noAccept = false;
         for (Element e : elements) {
@@ -219,7 +219,7 @@ public class SwordCollection {
     }
 
     public List<String> getSinglepartAccept() {
-        List<String> accepts = new ArrayList<String>();
+        List<String> accepts = new ArrayList<>();
         List<Element> elements = this.collection.getElements();
         boolean noAccept = false;
         for (Element e : elements) {
@@ -246,8 +246,8 @@ public class SwordCollection {
         return this.rationaliseAccepts(accepts);
     }
 
-    private List<String> rationaliseAccepts(List<String> accepts) {
-        List<String> rational = new ArrayList<String>();
+    private List<String> rationaliseAccepts(final List<String> accepts) {
+        List<String> rational = new ArrayList<>();
 
         // first, if "*/*" is there, then we accept anything
         if (accepts.contains("*/*")) {
@@ -256,7 +256,7 @@ public class SwordCollection {
         }
 
         // now look to see if we have <x>/* and if so eliminate the unnecessary accepts
-        List<String> wildcards = new ArrayList<String>();
+        List<String> wildcards = new ArrayList<>();
         for (String a : accepts) {
             if (a.contains("/*")) {
                 String wild = a.substring(0, a.indexOf("/"));

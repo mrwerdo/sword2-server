@@ -10,17 +10,17 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 
 public class OREStatement extends Statement {
-    private String remUri;
-    private String aggUri;
+    private final String remUri;
+    private final String aggUri;
 
-    public OREStatement(String remUri, String aggUri) {
+    public OREStatement(final String remUri, final String aggUri) {
         this.remUri = remUri;
         this.aggUri = aggUri;
         this.contentType = "application/rdf+xml";
     }
 
     @Override
-    public void writeTo(Writer out) throws IOException {
+    public void writeTo(final Writer out) throws IOException {
         // create the default model (in memory) to start with
         Model model = ModelFactory.createDefaultModel();
 

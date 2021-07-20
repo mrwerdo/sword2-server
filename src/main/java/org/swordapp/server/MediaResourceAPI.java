@@ -12,25 +12,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
 
 public class MediaResourceAPI extends SwordAPIEndpoint {
     private static Logger log = LoggerFactory.getLogger(MediaResourceAPI.class);
 
-    protected MediaResourceManager mrm;
+    protected final MediaResourceManager mrm;
 
-    public MediaResourceAPI(MediaResourceManager mrm, SwordConfiguration config) {
+    public MediaResourceAPI(final MediaResourceManager mrm, final SwordConfiguration config) {
         super(config);
         this.mrm = mrm;
     }
 
-    public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void get(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         this.get(req, resp, true);
     }
 
-    public void get(HttpServletRequest req, HttpServletResponse resp, boolean sendBody) throws ServletException, IOException {
+    public void get(final HttpServletRequest req, final HttpServletResponse resp, final boolean sendBody) throws ServletException, IOException {
         log.debug("GET on Media Resource URL");
 
         // let the superclass prepare the request/response objects
@@ -47,12 +47,11 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
             boolean allowUnauthenticated = this.config.allowUnauthenticatedMediaAccess();
             auth = this.getAuthCredentials(req, allowUnauthenticated);
             log.debug("Authentication Credentials extracted: " + auth.getUsername() + " obo: " + auth.getOnBehalfOf());
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -105,26 +104,23 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
                 out.flush();
                 in.close();
             }
-        }
-        catch (SwordError se) {
+        } catch (SwordError se) {
             this.swordError(req, resp, se);
             return;
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 
-    public void head(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void head(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         this.get(req, resp, false);
     }
 
-    public void put(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void put(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         // let the superclass prepare the request/response objects
         super.put(req, resp);
 
@@ -132,12 +128,11 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
         AuthCredentials auth = null;
         try {
             auth = this.getAuthCredentials(req);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -160,32 +155,28 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
             // no response is expected, if no errors get thrown we just return a success: 204 No Content
             // and the appropriate location header
             resp.setHeader("Location", receipt.getLocation().toString());
-            resp.setStatus(204);
-        }
-        catch (SwordError se) {
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (SwordError se) {
             // get rid of any temp files used
             this.cleanup(deposit);
 
             this.swordError(req, resp, se);
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // get rid of any temp files used
             this.cleanup(deposit);
 
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
-        }
-        finally {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } finally {
             // get rid of any temp files used
             this.cleanup(deposit);
         }
     }
 
-    public void post(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void post(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         // let the superclass prepare the request/response objects
         super.post(req, resp);
 
@@ -193,12 +184,11 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
         AuthCredentials auth = null;
         try {
             auth = this.getAuthCredentials(req);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -234,7 +224,7 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
                 throw new SwordServerException("No Edit-IRI found in Deposit Receipt; unable to send valid response");
             }
 
-            resp.setStatus(201); // Created
+            resp.setStatus(HttpServletResponse.SC_CREATED); // Created
             if (this.config.returnDepositReceipt() && !receipt.isEmpty()) {
                 this.addGenerator(receipt, this.config);
                 resp.setHeader("Content-Type", "application/atom+xml;type=entry");
@@ -245,31 +235,27 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
             } else {
                 resp.setHeader("Location", location.toString());
             }
-        }
-        catch (SwordError se) {
+        } catch (SwordError se) {
             // get rid of any temp files used
             this.cleanup(deposit);
 
             this.swordError(req, resp, se);
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // get rid of any temp files used
             this.cleanup(deposit);
 
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
-        }
-        finally {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } finally {
             // get rid of any temp files used
             this.cleanup(deposit);
         }
     }
 
-    public void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void delete(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         // let the superclass prepare the request/response objects
         super.delete(req, resp);
 
@@ -277,12 +263,11 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
         AuthCredentials auth = null;
         try {
             auth = this.getAuthCredentials(req);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -297,22 +282,19 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
             this.mrm.deleteMediaResource(editMediaIRI, auth, this.config);
 
             // no response is expected, if no errors get thrown then we just return a success: 204 No Content
-            resp.setStatus(204);
-        }
-        catch (SwordError se) {
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (SwordError se) {
             this.swordError(req, resp, se);
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 
-    protected void addGenerator(DepositReceipt doc, SwordConfiguration config) {
+    protected void addGenerator(final DepositReceipt doc, final SwordConfiguration config) {
         Element generator = this.getGenerator(this.config);
         if (generator != null) {
             doc.getWrappedEntry().addExtension(generator);

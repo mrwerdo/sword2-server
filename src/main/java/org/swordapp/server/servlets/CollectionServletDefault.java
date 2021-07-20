@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.swordapp.server.CollectionAPI;
 import org.swordapp.server.CollectionDepositManager;
 import org.swordapp.server.CollectionListManager;
-import org.swordapp.server.SwordConfiguration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,12 +33,12 @@ public class CollectionServletDefault extends SwordServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         this.api.get(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         this.api.post(req, resp);
     }
 }

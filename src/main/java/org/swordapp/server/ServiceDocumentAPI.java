@@ -12,14 +12,14 @@ import java.io.IOException;
 public class ServiceDocumentAPI extends SwordAPIEndpoint {
     private static Logger log = LoggerFactory.getLogger(ServiceDocumentAPI.class);
 
-    protected ServiceDocumentManager sdm;
+    protected final ServiceDocumentManager sdm;
 
-    public ServiceDocumentAPI(ServiceDocumentManager sdm, SwordConfiguration config) {
+    public ServiceDocumentAPI(final ServiceDocumentManager sdm, final SwordConfiguration config) {
         super(config);
         this.sdm = sdm;
     }
 
-    public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void get(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         // let the superclass prepare the request/response objects
         super.get(req, resp);
 
@@ -27,12 +27,11 @@ public class ServiceDocumentAPI extends SwordAPIEndpoint {
         AuthCredentials auth = null;
         try {
             auth = this.getAuthCredentials(req);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -50,27 +49,23 @@ public class ServiceDocumentAPI extends SwordAPIEndpoint {
             // set the content-type and write the service document to the output stream
             resp.setHeader("Content-Type", "application/atomserv+xml");
             serviceDocument.getAbderaService().writeTo(resp.getWriter());
-        }
-        catch (SwordError se) {
+        } catch (SwordError se) {
             // this is a SWORD level error, to be thrown to the client appropriately
             this.swordError(req, resp, se);
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             // this is something else, to be raised as an internal server error
             throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
-        }
-        finally {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } finally {
             // flush the output stream
             resp.getWriter().flush();
         }
     }
 
-    protected void addGenerator(ServiceDocument doc, SwordConfiguration config) {
+    protected void addGenerator(final ServiceDocument doc, final SwordConfiguration config) {
         Element generator = this.getGenerator(this.config);
         if (generator != null) {
             doc.getWrappedService().addExtension(generator);

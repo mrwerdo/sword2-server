@@ -17,9 +17,12 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Neil Taylor, Stuart Lewis
  */
-public class ChecksumUtils {
+public final class ChecksumUtils {
     /** Logger */
     private static Logger log = LoggerFactory.getLogger(ChecksumUtils.class);
+
+    // Utility class - hiding default constructor.
+    private ChecksumUtils() { }
 
     /**
      * Generate an MD5 hash for the file that is specified in the filepath. The hash is returned as a String representation.
@@ -32,7 +35,7 @@ public class ChecksumUtils {
      * @throws IOException
      *         If there is an error accessing the file.
      */
-    public static String generateMD5(String filepath) throws NoSuchAlgorithmException, IOException {
+    public static String generateMD5(final String filepath) throws NoSuchAlgorithmException, IOException {
         return generateMD5(new FileInputStream(filepath));
     }
 
@@ -47,14 +50,15 @@ public class ChecksumUtils {
      * @throws IOException
      *         If there is an error accessing the file.
      */
-    public static String generateMD5(InputStream md5Stream) throws NoSuchAlgorithmException, IOException {
+    public static String generateMD5(final InputStream md5Stream) throws NoSuchAlgorithmException, IOException {
         String md5 = null;
+        final int bufferSize = 1024;
 
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.reset();
 
-            byte[] bytes = new byte[1024];
+            byte[] bytes = new byte[bufferSize];
             int count = 0;
             while ((count = md5Stream.read(bytes)) != -1) {
                 md.update(bytes, 0, count);
@@ -73,12 +77,10 @@ public class ChecksumUtils {
             }
 
             md5 = buffer.toString();
-        }
-        catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException ex) {
             log.error("MD5 Algorithm Not found");
             throw ex;
-        }
-        finally {
+        } finally {
             if (md5Stream != null) {
                 md5Stream.close();
             }
@@ -98,7 +100,7 @@ public class ChecksumUtils {
      * @throws IOException
      *         If there is an error accessing the file.
      */
-    public static String generateMD5(byte[] bytes) throws NoSuchAlgorithmException, IOException {
+    public static String generateMD5(final byte[] bytes) throws NoSuchAlgorithmException, IOException {
         String md5 = null;
 
         try {
@@ -120,8 +122,7 @@ public class ChecksumUtils {
             }
 
             md5 = buffer.toString();
-        }
-        catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException ex) {
             log.error("MD5 Algorithm Not found");
             throw ex; // rethrow
         }
@@ -139,7 +140,7 @@ public class ChecksumUtils {
      * @throws IOException
      *         If there is an error accessing the file.
      */
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
+    public static void main(final String[] args) throws NoSuchAlgorithmException, IOException {
         System.out.println(ChecksumUtils.generateMD5(args[0]));
     }
 }

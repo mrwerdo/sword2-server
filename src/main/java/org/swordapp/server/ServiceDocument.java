@@ -30,15 +30,15 @@ public class ServiceDocument {
         return abderaService;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 
-    public void setMaxUploadSize(int maxUploadSize) {
+    public void setMaxUploadSize(final int maxUploadSize) {
         this.maxUploadSize = maxUploadSize;
     }
 
-    public void addWorkspace(SwordWorkspace workspace) {
+    public void addWorkspace(final SwordWorkspace workspace) {
         // FIXME: or do we just keep a reference of these until we get a call to getAbderaService()?
         Workspace abderaWorkspace = workspace.getAbderaWorkspace();
         this.service.addWorkspace(abderaWorkspace);

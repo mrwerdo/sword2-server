@@ -2,14 +2,14 @@ package org.swordapp.server.servlets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.swordapp.server.*;
+import org.swordapp.server.SwordConfiguration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import java.lang.reflect.Constructor;
 
 public class SwordServlet extends HttpServlet {
-    private static final Logger log = LoggerFactory.getLogger(SwordServlet.class);
+    private static Logger log = LoggerFactory.getLogger(SwordServlet.class);
 
     protected SwordConfiguration config;
 
@@ -18,7 +18,7 @@ public class SwordServlet extends HttpServlet {
         this.config = (SwordConfiguration) this.loadImplClass("config-impl", false);
     }
 
-    protected Object loadImplClass(String paramName, boolean allowNull) throws ServletException {
+    protected Object loadImplClass(final String paramName, final boolean allowNull) throws ServletException {
         String className = getServletContext().getInitParameter(paramName);
         if (className == null) {
             if (allowNull) {
@@ -38,14 +38,14 @@ public class SwordServlet extends HttpServlet {
                         break;
                     }
                 }
-                if (zeroConstructor == null)
+                if (zeroConstructor == null) {
                     throw new IllegalArgumentException("Cannot find a public zero args constructor.");
+                }
                 
                 Object obj = zeroConstructor.newInstance();
                 log.info("Using " + className + " as '" + paramName + "'");
                 return obj;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("Unable to instantiate class from '" + paramName + "': " + className);
                 throw new ServletException("Unable to instantiate class from '" + paramName + "': " + className, e);
             }

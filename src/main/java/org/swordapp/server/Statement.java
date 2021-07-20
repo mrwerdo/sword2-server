@@ -22,32 +22,32 @@ public abstract class Statement {
         return contentType;
     }
 
-    public void setOriginalDeposits(List<OriginalDeposit> originalDeposits) {
+    public void setOriginalDeposits(final List<OriginalDeposit> originalDeposits) {
         this.originalDeposits = originalDeposits;
     }
 
-    public void addOriginalDeposit(OriginalDeposit originalDeposit) {
+    public void addOriginalDeposit(final OriginalDeposit originalDeposit) {
         this.originalDeposits.add(originalDeposit);
     }
 
-    public void setResources(List<ResourcePart> resources) {
+    public void setResources(final List<ResourcePart> resources) {
         this.resources = resources;
     }
 
-    public void addResource(ResourcePart resource) {
+    public void addResource(final ResourcePart resource) {
         this.resources.add(resource);
     }
 
-    public void setStates(Map<String, String> states) {
+    public void setStates(final Map<String, String> states) {
         this.states = states;
     }
 
-    public void setState(String state, String description) {
+    public void setState(final String state, final String description) {
         this.states.clear();
         this.states.put(state, description);
     }
 
-    public void addState(String state, String description) {
+    public void addState(final String state, final String description) {
         this.states.put(state, description);
     }
 
@@ -55,7 +55,7 @@ public abstract class Statement {
         return lastModified;
     }
 
-    public void setLastModified(Date lastModified) {
+    public void setLastModified(final Date lastModified) {
         this.lastModified = lastModified;
     }
 }

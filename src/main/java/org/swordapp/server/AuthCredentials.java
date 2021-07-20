@@ -1,11 +1,11 @@
 package org.swordapp.server;
 
 public class AuthCredentials {
-    private String username;
-    private String password;
-    private String onBehalfOf;
+    private final String username;
+    private final String password;
+    private final String onBehalfOf;
 
-    public AuthCredentials(String username, String password, String onBehalfOf) {
+    public AuthCredentials(final String username, final String password, final String onBehalfOf) {
         this.username = username;
         this.password = password;
         this.onBehalfOf = onBehalfOf;

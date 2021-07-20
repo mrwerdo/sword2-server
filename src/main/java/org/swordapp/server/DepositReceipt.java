@@ -4,7 +4,6 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.i18n.iri.IRI;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Link;
 
 import javax.xml.namespace.QName;
@@ -15,20 +14,20 @@ import java.util.List;
 import java.util.Map;
 
 public class DepositReceipt {
-    private List<String> packagingFormats = new ArrayList<String>();
+    private List<String> packagingFormats = new ArrayList<>();
     private IRI editIRI = null;
     private IRI seIRI = null;
     private IRI emIRI = null;
     private IRI feedIRI = null;
     private IRI location = null;
     private Entry entry;
-    private Map<String, String> statements = new HashMap<String, String>();
+    private Map<String, String> statements = new HashMap<>();
     private String treatment = "no treatment information available";
     private String verboseDescription = null;
     private String splashUri = null;
     private String originalDepositUri = null;
     private String originalDepositType = null;
-    private Map<String, String> derivedResources = new HashMap<String, String>();
+    private Map<String, String> derivedResources = new HashMap<>();
     private boolean empty = false;
     private Date lastModified = null;
 
@@ -112,7 +111,7 @@ public class DepositReceipt {
         return lastModified;
     }
 
-    public void setLastModified(Date lastModified) {
+    public void setLastModified(final Date lastModified) {
         this.lastModified = lastModified;
     }
 
@@ -120,19 +119,19 @@ public class DepositReceipt {
         return empty;
     }
 
-    public void setEmpty(boolean empty) {
+    public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
 
-    public void setMediaFeedIRI(IRI feedIRI) {
+    public void setMediaFeedIRI(final IRI feedIRI) {
         this.feedIRI = feedIRI;
     }
 
-    public void setEditMediaIRI(IRI emIRI) {
+    public void setEditMediaIRI(final IRI emIRI) {
         this.emIRI = emIRI;
     }
 
-    public void setEditIRI(IRI editIRI) {
+    public void setEditIRI(final IRI editIRI) {
         this.editIRI = editIRI;
 
         // set the SE-IRI as the same if it has not already been set
@@ -145,7 +144,7 @@ public class DepositReceipt {
         return this.location == null ? this.editIRI : this.location;
     }
 
-    public void setLocation(IRI location) {
+    public void setLocation(final IRI location) {
         this.location = location;
     }
 
@@ -157,7 +156,7 @@ public class DepositReceipt {
         return this.seIRI;
     }
 
-    public void setSwordEditIRI(IRI seIRI) {
+    public void setSwordEditIRI(final IRI seIRI) {
         this.seIRI = seIRI;
 
         // set the Edit-IRI the same if it has not already been set
@@ -166,15 +165,15 @@ public class DepositReceipt {
         }
     }
 
-    public void setContent(IRI href, String mediaType) {
+    public void setContent(final IRI href, final String mediaType) {
         this.entry.setContent(href, mediaType);
     }
 
-    public void addEditMediaIRI(IRI href) {
+    public void addEditMediaIRI(final IRI href) {
         this.entry.addLink(href.toString(), "edit-media");
     }
 
-    public void addEditMediaIRI(IRI href, String mediaType) {
+    public void addEditMediaIRI(final IRI href, final String mediaType) {
         Abdera abdera = new Abdera();
         Link link = abdera.getFactory().newLink();
         link.setHref(href.toString());
@@ -183,60 +182,60 @@ public class DepositReceipt {
         this.entry.addLink(link);
     }
 
-    public void addEditMediaFeedIRI(IRI href) {
+    public void addEditMediaFeedIRI(final IRI href) {
         this.addEditMediaIRI(href, "application/atom+xml;type=feed");
     }
 
-    public void setPackaging(List<String> packagingFormats) {
+    public void setPackaging(final List<String> packagingFormats) {
         this.packagingFormats = packagingFormats;
     }
 
-    public void addPackaging(String packagingFormat) {
+    public void addPackaging(final String packagingFormat) {
         this.packagingFormats.add(packagingFormat);
     }
 
-    public void setOREStatementURI(String statement) {
+    public void setOREStatementURI(final String statement) {
         this.setStatementURI("application/rdf+xml", statement);
     }
 
-    public void setAtomStatementURI(String statement) {
+    public void setAtomStatementURI(final String statement) {
         this.setStatementURI("application/atom+xml;type=feed", statement);
     }
 
-    public void setStatementURI(String type, String statement) {
+    public void setStatementURI(final String type, final String statement) {
         this.statements.put(statement, type);
     }
 
-    public Element addSimpleExtension(QName qname, String value) {
+    public Element addSimpleExtension(final QName qname, final String value) {
         return this.entry.addSimpleExtension(qname, value);
     }
 
-    public Element addDublinCore(String element, String value) {
+    public Element addDublinCore(final String element, final String value) {
         return this.entry.addSimpleExtension(new QName(UriRegistry.DC_NAMESPACE, element), value);
     }
 
-    public void setTreatment(String treatment) {
+    public void setTreatment(final String treatment) {
         this.treatment = treatment;
     }
 
-    public void setVerboseDescription(String verboseDescription) {
+    public void setVerboseDescription(final String verboseDescription) {
         this.verboseDescription = verboseDescription;
     }
 
-    public void setSplashUri(String splashUri) {
+    public void setSplashUri(final String splashUri) {
         this.splashUri = splashUri;
     }
 
-    public void setOriginalDeposit(String originalDepositUri, String originalDepositType) {
+    public void setOriginalDeposit(final String originalDepositUri, final String originalDepositType) {
         this.originalDepositUri = originalDepositUri;
         this.originalDepositType = originalDepositType;
     }
 
-    public void setDerivedResources(Map<String, String> derivedResources) {
+    public void setDerivedResources(final Map<String, String> derivedResources) {
         this.derivedResources = derivedResources;
     }
 
-    public void addDerivedResource(String resourceUri, String resourceType) {
+    public void addDerivedResource(final String resourceUri, final String resourceType) {
         this.derivedResources.put(resourceUri, resourceType);
     }
 }

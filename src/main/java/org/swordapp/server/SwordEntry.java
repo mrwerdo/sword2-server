@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class SwordEntry {
-    public Entry entry;
+    private final Entry entry;
 
-    public SwordEntry(Entry entry) {
+    public SwordEntry(final Entry entry) {
         this.entry = entry;
     }
 
@@ -34,8 +34,7 @@ public class SwordEntry {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             this.entry.writeTo(baos);
             return baos.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

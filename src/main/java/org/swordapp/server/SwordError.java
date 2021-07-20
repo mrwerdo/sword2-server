@@ -1,6 +1,6 @@
 package org.swordapp.server;
 
-public class SwordError extends Exception {
+public final class SwordError extends Exception {
     private String errorUri;
     private int status = -1;
     private boolean hasBody = true;
@@ -9,51 +9,51 @@ public class SwordError extends Exception {
         super();
     }
 
-    public SwordError(int status) {
+    public SwordError(final int status) {
         super();
         this.status = status;
         this.hasBody = false;
     }
 
-    public SwordError(String errorUri) {
+    public SwordError(final String errorUri) {
         super(errorUri);
         this.errorUri = errorUri;
     }
 
-    public SwordError(String errorUri, int status) {
+    public SwordError(final String errorUri, final int status) {
         super(errorUri);
         this.errorUri = errorUri;
         this.status = status;
     }
 
-    public SwordError(String errorUri, String message) {
+    public SwordError(final String errorUri, final String message) {
         super(message);
         this.errorUri = errorUri;
     }
 
-    public SwordError(String errorUri, int status, String message) {
+    public SwordError(final String errorUri, final int status, final String message) {
         super(message);
         this.errorUri = errorUri;
         this.status = status;
     }
 
-    public SwordError(String errorUri, Throwable cause) {
+    public SwordError(final String errorUri, final Throwable cause) {
         super(errorUri, cause);
         this.errorUri = errorUri;
     }
 
-    public SwordError(String errorUri, int status, Throwable cause) {
+    public SwordError(final String errorUri, final int status, final Throwable cause) {
         super(errorUri, cause);
         this.errorUri = errorUri;
         this.status = status;
     }
 
-    public SwordError(String errorUri, String message, Throwable cause) {
+    public SwordError(final String errorUri, final String message, final Throwable cause) {
         super(message, cause);
         this.errorUri = errorUri;
     }
 
-    public SwordError(String errorUri, int status, String message, Throwable cause) {
+    public SwordError(final String errorUri, final int status, final String message, final Throwable cause) {
         super(message, cause);
         this.errorUri = errorUri;
         this.status = status;

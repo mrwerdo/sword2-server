@@ -4,7 +4,6 @@ import org.apache.abdera.model.Entry;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,9 +20,10 @@ public class Deposit {
     private File file = null;
     private long contentLength = -1L;
 
-    public Deposit() {}
+    public Deposit() { }
 
-    public Deposit(Entry entry, InputStream inputStream, String filename, String mimeType, String slug, String md5, String packaging, boolean inProgress) {
+    public Deposit(final Entry entry, final InputStream inputStream, final String filename, final String mimeType,
+                   final String slug, final String md5, final String packaging, final boolean inProgress) {
         this.entry = new SwordEntry(entry);
         this.inputStream = inputStream;
         this.filename = filename;
@@ -50,7 +50,7 @@ public class Deposit {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(final File file) {
         this.file = file;
         this.inputStream = null;
     }
@@ -59,7 +59,7 @@ public class Deposit {
         return entry;
     }
 
-    public void setEntry(Entry entry) {
+    public void setEntry(final Entry entry) {
         this.entry = new SwordEntry(entry);
     }
 
@@ -73,16 +73,12 @@ public class Deposit {
                 return inputStream;
             }
             return null;
-        }
-        catch (FileNotFoundException e) {
-            throw new SwordServerException(e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new SwordServerException(e);
         }
     }
 
-    public void setInputStream(InputStream inputStream) {
+    public void setInputStream(final InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
@@ -90,7 +86,7 @@ public class Deposit {
         return filename;
     }
 
-    public void setFilename(String filename) {
+    public void setFilename(final String filename) {
         this.filename = filename;
     }
 
@@ -98,7 +94,7 @@ public class Deposit {
         return mimeType;
     }
 
-    public void setMimeType(String mimeType) {
+    public void setMimeType(final String mimeType) {
         this.mimeType = mimeType;
     }
 
@@ -106,7 +102,7 @@ public class Deposit {
         return slug;
     }
 
-    public void setSlug(String slug) {
+    public void setSlug(final String slug) {
         this.slug = slug;
     }
 
@@ -114,7 +110,7 @@ public class Deposit {
         return md5;
     }
 
-    public void setMd5(String md5) {
+    public void setMd5(final String md5) {
         this.md5 = md5;
     }
 
@@ -122,7 +118,7 @@ public class Deposit {
         return packaging;
     }
 
-    public void setPackaging(String packaging) {
+    public void setPackaging(final String packaging) {
         this.packaging = packaging;
     }
 
@@ -130,7 +126,7 @@ public class Deposit {
         return inProgress;
     }
 
-    public void setInProgress(boolean inProgress) {
+    public void setInProgress(final boolean inProgress) {
         this.inProgress = inProgress;
     }
 
@@ -138,11 +134,11 @@ public class Deposit {
         return metadataRelevant;
     }
 
-    public void setMetadataRelevant(boolean metadataRelevant) {
+    public void setMetadataRelevant(final boolean metadataRelevant) {
         this.metadataRelevant = metadataRelevant;
     }
 
-    public void setContentLength(long length) {
+    public void setContentLength(final long length) {
         this.contentLength = length;
     }
 

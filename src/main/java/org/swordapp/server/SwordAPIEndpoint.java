@@ -9,7 +9,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.ParameterParser;
-import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
@@ -18,7 +17,13 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Enumeration;
@@ -28,35 +33,35 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SwordAPIEndpoint {
-    protected SwordConfiguration config;
+    protected final SwordConfiguration config;
 
     private static Logger log = LoggerFactory.getLogger(SwordAPIEndpoint.class);
 
-    protected SwordAPIEndpoint(SwordConfiguration config) {
+    protected SwordAPIEndpoint(final SwordConfiguration config) {
         this.config = config;
     }
 
-    public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void get(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
     }
 
-    public void post(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void post(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
     }
 
-    public void put(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void put(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
     }
 
-    public void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void delete(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         resp.setCharacterEncoding("UTF-8");
     }
 
-    protected AuthCredentials getAuthCredentials(HttpServletRequest request) throws SwordAuthException {
+    protected AuthCredentials getAuthCredentials(final HttpServletRequest request) throws SwordAuthException {
         return this.getAuthCredentials(request, false);
     }
 
-    protected AuthCredentials getAuthCredentials(HttpServletRequest request, boolean allowUnauthenticated) throws SwordAuthException {
+    protected AuthCredentials getAuthCredentials(final HttpServletRequest request, final boolean allowUnauthenticated) throws SwordAuthException {
         AuthCredentials auth = null;
         String authType = this.config.getAuthType(); // ideally Basic, but may be "none"
         String obo = "";
@@ -96,7 +101,7 @@ public class SwordAPIEndpoint {
         return auth;
     }
 
-    protected String[] decodeAuthHeader(String encodedHeader) throws SwordAuthException {
+    protected String[] decodeAuthHeader(final String encodedHeader) throws SwordAuthException {
         // we have an authentication header, so parse it
         String[] authBits = encodedHeader.split(" ");
 
@@ -125,7 +130,7 @@ public class SwordAPIEndpoint {
         return userPass;
     }
 
-    protected String getFullUrl(HttpServletRequest req) {
+    protected String getFullUrl(final HttpServletRequest req) {
         String url = req.getRequestURL().toString();
         String q = req.getQueryString();
         if (q != null && !"".equals(q)) {
@@ -134,7 +139,7 @@ public class SwordAPIEndpoint {
         return url;
     }
 
-    protected void storeAndCheckBinary(Deposit deposit, SwordConfiguration config) throws SwordServerException, SwordError {
+    protected void storeAndCheckBinary(final Deposit deposit, final SwordConfiguration config) throws SwordServerException, SwordError {
         // we require an input stream for this to work
         if (deposit.getInputStream() == null) {
             throw new SwordServerException("Attempting to store and check deposit which has no input stream");
@@ -154,19 +159,18 @@ public class SwordAPIEndpoint {
         try {
             InputStream inputstream = deposit.getInputStream();
             OutputStream outputstream = new FileOutputStream(new File(filename));
+            final int bufferSize = 1024;
             try {
-                byte[] buf = new byte[1024];
+                byte[] buf = new byte[bufferSize];
                 int len;
                 while ((len = inputstream.read(buf)) > 0) {
                     outputstream.write(buf, 0, len);
                 }
-            }
-            finally {
+            } finally {
                 inputstream.close();
                 outputstream.close();
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new SwordServerException(e);
         }
 
@@ -195,16 +199,14 @@ public class SwordAPIEndpoint {
                 throw new SwordError(UriRegistry.ERROR_CHECKSUM_MISMATCH, msg);
             }
             log.debug("Package temporarily stored as: " + filename);
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new SwordServerException(e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new SwordServerException(e);
         }
     }
 
-    protected void addDepositPropertiesFromMultipart(Deposit deposit, HttpServletRequest req) throws ServletException, IOException, SwordError {
+    protected void addDepositPropertiesFromMultipart(final Deposit deposit, final HttpServletRequest req) throws ServletException, IOException, SwordError {
         // Parse the request for files (using the fileupload commons library)
         List<FileItem> items = this.getPartsFromRequest(req);
         for (FileItem item : items) {
@@ -244,13 +246,12 @@ public class SwordAPIEndpoint {
 
         try {
             this.storeAndCheckBinary(deposit, this.config);
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
         }
     }
 
-    protected void cleanup(Deposit deposit) {
+    protected void cleanup(final Deposit deposit) {
         if (deposit == null) {
             return;
         }
@@ -264,7 +265,7 @@ public class SwordAPIEndpoint {
         deposit.setFile(null);
     }
 
-    protected Element getGenerator(SwordConfiguration config) {
+    protected Element getGenerator(final SwordConfiguration config) {
         String generatorUri = config.generator();
         String generatorVersion = config.generatorVersion();
         String adminEmail = config.administratorEmail();
@@ -283,7 +284,7 @@ public class SwordAPIEndpoint {
         return null;
     }
 
-    protected void addDepositPropertiesFromEntry(Deposit deposit, HttpServletRequest req) throws IOException {
+    protected void addDepositPropertiesFromEntry(final Deposit deposit, final HttpServletRequest req) throws IOException {
         InputStream entryPart = req.getInputStream();
         Abdera abdera = new Abdera();
         Parser parser = abdera.getParser();
@@ -292,7 +293,7 @@ public class SwordAPIEndpoint {
         deposit.setEntry(entry);
     }
 
-    protected void addDepositPropertiesFromBinary(Deposit deposit, HttpServletRequest req) throws ServletException, IOException, SwordError {
+    protected void addDepositPropertiesFromBinary(final Deposit deposit, final HttpServletRequest req) throws ServletException, IOException, SwordError {
         String contentType = this.getContentType(req);
         String contentDisposition = req.getHeader("Content-Disposition");
         String md5 = req.getHeader("Content-MD5");
@@ -304,8 +305,7 @@ public class SwordAPIEndpoint {
         if (req.getHeader("Content-Length") != null) {
             try {
                 len = Long.parseLong(req.getHeader("Content-Length"));
-            }
-            catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) { }
         }
 
         InputStream file = req.getInputStream();
@@ -325,13 +325,12 @@ public class SwordAPIEndpoint {
 
         try {
             this.storeAndCheckBinary(deposit, this.config);
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
         }
     }
 
-    protected void swordError(HttpServletRequest req, HttpServletResponse resp, SwordError e) throws IOException, ServletException {
+    protected void swordError(final HttpServletRequest req, final HttpServletResponse resp, final SwordError e) throws IOException, ServletException {
         try {
             if (!this.config.returnErrorBody() || !e.hasBody()) {
                 ErrorDocument doc = new ErrorDocument(e.getErrorUri(), e.getStatus());
@@ -364,13 +363,12 @@ public class SwordAPIEndpoint {
 
             doc.writeTo(resp.getWriter(), this.config);
             resp.getWriter().flush();
-        }
-        catch (SwordServerException sse) {
+        } catch (SwordServerException sse) {
             throw new ServletException(sse);
         }
     }
 
-    protected String getContentDispositionValue(String contentDisposition, String key) {
+    protected String getContentDispositionValue(final String contentDisposition, final String key) {
         if (contentDisposition == null || key == null) {
             return null;
         }
@@ -381,7 +379,7 @@ public class SwordAPIEndpoint {
         return parameters.get(key);
     }
 
-    protected List<FileItem> getPartsFromRequest(HttpServletRequest request) throws ServletException {
+    protected List<FileItem> getPartsFromRequest(final HttpServletRequest request) throws ServletException {
         try {
             // Create a factory for disk-based file items
             FileItemFactory factory = new DiskFileItemFactory();
@@ -393,13 +391,12 @@ public class SwordAPIEndpoint {
             List<FileItem> items = upload.parseRequest(request);
 
             return items;
-        }
-        catch (FileUploadException e) {
+        } catch (FileUploadException e) {
             throw new ServletException(e);
         }
     }
 
-    protected Map<String, String> getAcceptHeaders(HttpServletRequest req) {
+    protected Map<String, String> getAcceptHeaders(final HttpServletRequest req) {
         Map<String, String> acceptHeaders = new HashMap<String, String>();
         Enumeration headers = req.getHeaderNames();
         while (headers.hasMoreElements()) {
@@ -411,12 +408,12 @@ public class SwordAPIEndpoint {
         return acceptHeaders;
     }
 
-    protected void copyInputToOutput(InputStream in, OutputStream out) throws IOException {
-        final int BUFFER_SIZE = 1024 * 4;
-        final byte[] buffer = new byte[BUFFER_SIZE];
+    protected void copyInputToOutput(final InputStream in, final OutputStream out) throws IOException {
+        final int bufferSize = 1024 * 4;
+        final byte[] buffer = new byte[bufferSize];
 
         while (true) {
-            final int count = in.read(buffer, 0, BUFFER_SIZE);
+            final int count = in.read(buffer, 0, bufferSize);
 
             if (-1 == count) {
                 break;
@@ -427,7 +424,7 @@ public class SwordAPIEndpoint {
         }
     }
 
-    protected String getContentType(HttpServletRequest req) {
+    protected String getContentType(final HttpServletRequest req) {
         String contentType = req.getHeader("Content-Type");
         if (contentType == null) {
             contentType = "application/octet-stream";
@@ -435,7 +432,7 @@ public class SwordAPIEndpoint {
         return contentType;
     }
 
-    protected boolean getInProgress(HttpServletRequest req) throws SwordError {
+    protected boolean getInProgress(final HttpServletRequest req) throws SwordError {
         String iph = req.getHeader("In-Progress");
         boolean inProgress = false; // default value
         if (iph != null) {
@@ -448,7 +445,7 @@ public class SwordAPIEndpoint {
         return inProgress;
     }
 
-    protected boolean getMetadataRelevant(HttpServletRequest req) throws SwordError {
+    protected boolean getMetadataRelevant(final HttpServletRequest req) throws SwordError {
         String mdr = req.getHeader("Metadata-Relevant");
         boolean metadataRelevant = false; // default value
         if (mdr != null) {

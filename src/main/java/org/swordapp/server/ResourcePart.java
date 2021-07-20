@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.List;
 
 public class ResourcePart {
-    protected String uri;
+    protected final String uri;
     protected String mediaType;
-    protected Map<String, String> properties = new HashMap<String, String>();
-    protected List<String> selfLinks = new ArrayList<String>();
+    protected Map<String, String> properties = new HashMap<>();
+    protected List<String> selfLinks = new ArrayList<>();
 
-    public ResourcePart(String uri) {
+    public ResourcePart(final String uri) {
         this.uri = uri;
     }
 
@@ -23,15 +23,15 @@ public class ResourcePart {
         return mediaType;
     }
 
-    public void setMediaType(String mediaType) {
+    public void setMediaType(final String mediaType) {
         this.mediaType = mediaType;
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(final Map<String, String> properties) {
         this.properties = properties;
     }
 
-    public void addProperty(String predicate, String object) {
+    public void addProperty(final String predicate, final String object) {
         this.properties.put(predicate, object);
     }
 
@@ -39,7 +39,7 @@ public class ResourcePart {
         return selfLinks;
     }
 
-    public void addSelfLink(String link) {
+    public void addSelfLink(final String link) {
         selfLinks.add(link);
     }
 

@@ -11,11 +11,11 @@ public class MediaResource {
     private String contentMD5;
     private Date lastModified;
 
-    public MediaResource(InputStream in, String contentType, String packaging) {
+    public MediaResource(final InputStream in, final String contentType, final String packaging) {
         this(in, contentType, packaging, false);
     }
 
-    public MediaResource(InputStream in, String contentType, String packaging, boolean unpackaged) {
+    public MediaResource(final InputStream in, final String contentType, final String packaging, final boolean unpackaged) {
         this.inputStream = in;
         this.contentType = contentType;
         this.packaging = packaging;
@@ -26,7 +26,7 @@ public class MediaResource {
         return contentMD5;
     }
 
-    public void setContentMD5(String contentMD5) {
+    public void setContentMD5(final String contentMD5) {
         this.contentMD5 = contentMD5;
     }
 
@@ -34,7 +34,7 @@ public class MediaResource {
         return lastModified;
     }
 
-    public void setLastModified(Date lastModified) {
+    public void setLastModified(final Date lastModified) {
         this.lastModified = lastModified;
     }
 
@@ -42,7 +42,7 @@ public class MediaResource {
         return unpackaged;
     }
 
-    public void setUnpackaged(boolean unpackaged) {
+    public void setUnpackaged(final boolean unpackaged) {
         this.unpackaged = unpackaged;
     }
 
@@ -54,7 +54,7 @@ public class MediaResource {
         return inputStream;
     }
 
-    public void setInputStream(InputStream inputStream) {
+    public void setInputStream(final InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
@@ -62,11 +62,11 @@ public class MediaResource {
         return contentType;
     }
 
-    public void setContentType(String contentType) {
+    public void setContentType(final String contentType) {
         this.contentType = contentType;
     }
 
-    public void setPackaging(String packaging) {
+    public void setPackaging(final String packaging) {
         this.packaging = packaging;
     }
 }

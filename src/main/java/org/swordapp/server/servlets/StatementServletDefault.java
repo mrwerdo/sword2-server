@@ -1,13 +1,13 @@
 package org.swordapp.server.servlets;
 
-import org.swordapp.server.*;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.swordapp.server.StatementAPI;
+import org.swordapp.server.StatementManager;
 
 public class StatementServletDefault extends SwordServlet {
     private static Logger log = LoggerFactory.getLogger(StatementServletDefault.class);
@@ -26,7 +26,7 @@ public class StatementServletDefault extends SwordServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         this.statementApi.get(req, resp);
     }
 }

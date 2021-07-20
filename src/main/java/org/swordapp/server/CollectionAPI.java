@@ -21,16 +21,16 @@ import java.util.Date;
 public class CollectionAPI extends SwordAPIEndpoint {
     private static Logger log = LoggerFactory.getLogger(CollectionAPI.class);
 
-    protected CollectionListManager clm = null;
-    protected CollectionDepositManager cdm;
+    protected final CollectionListManager clm;
+    protected final CollectionDepositManager cdm;
 
-    public CollectionAPI(CollectionListManager clm, CollectionDepositManager cdm, SwordConfiguration config) {
+    public CollectionAPI(final CollectionListManager clm, final CollectionDepositManager cdm, final SwordConfiguration config) {
         super(config);
         this.clm = clm;
         this.cdm = cdm;
     }
 
-    public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void get(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         // let the superclass prepare the request/response objects
         super.get(req, resp);
 
@@ -44,12 +44,11 @@ public class CollectionAPI extends SwordAPIEndpoint {
         AuthCredentials auth = null;
         try {
             auth = this.getAuthCredentials(req);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -64,7 +63,7 @@ public class CollectionAPI extends SwordAPIEndpoint {
             // give us back null
             if (feed == null) {
                 // method not allowed
-                resp.sendError(405, "This server does not support listing collection contents");
+                resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "This server does not support listing collection contents");
                 return;
             }
 
@@ -74,21 +73,18 @@ public class CollectionAPI extends SwordAPIEndpoint {
             resp.setHeader("Content-Type", "application/atom+xml;type=feed");
             feed.writeTo(resp.getWriter());
             resp.getWriter().flush();
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
-        }
-        catch (SwordError se) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (SwordError se) {
             this.swordError(req, resp, se);
         }
     }
 
-    public void post(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void post(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         // let the superclass prepare the request/response objects
         super.post(req, resp);
 
@@ -96,12 +92,11 @@ public class CollectionAPI extends SwordAPIEndpoint {
         AuthCredentials auth = null;
         try {
             auth = this.getAuthCredentials(req);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -149,7 +144,7 @@ public class CollectionAPI extends SwordAPIEndpoint {
                 throw new SwordServerException("No Location found in Deposit Receipt; unable to send valid response");
             }
 
-            resp.setStatus(201); // Created
+            resp.setStatus(HttpServletResponse.SC_CREATED); // Created
             if (this.config.returnDepositReceipt() && !receipt.isEmpty()) {
                 resp.setHeader("Content-Type", "application/atom+xml;type=entry");
                 resp.setHeader("Location", location.toString());
@@ -175,45 +170,37 @@ public class CollectionAPI extends SwordAPIEndpoint {
             } else {
                 resp.setHeader("Location", location.toString());
             }
-        }
-        catch (SwordError se) {
+        } catch (SwordError se) {
             // get rid of any temp files used
             this.cleanup(deposit);
 
             this.swordError(req, resp, se);
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException | NoSuchAlgorithmException e) {
             throw new ServletException(e);
-        }
-        catch (NoSuchAlgorithmException e) {
-            throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // get rid of any temp files used
             this.cleanup(deposit);
 
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
-        }
-        /** Thrown in case {@link #post} receives a "slug" with illegally encoded characters */
-        catch (IllegalArgumentException e) {
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } catch (IllegalArgumentException e) {
+            // IllegalArgumentException is thrown in case .post() receives a "slug" with illegally encoded characters
             throw new ServletException(e);
-        }
-        finally {
+        } finally {
             // get rid of any temp files used
             this.cleanup(deposit);
         }
     }
 
-    protected void addGenerator(DepositReceipt doc, SwordConfiguration config) {
+    protected void addGenerator(final DepositReceipt doc, final SwordConfiguration config) {
         Element generator = this.getGenerator(this.config);
         if (generator != null) {
             doc.getWrappedEntry().addExtension(generator);
         }
     }
 
-    protected void addGenerator(Feed doc, SwordConfiguration config) {
+    protected void addGenerator(final Feed doc, final SwordConfiguration config) {
         Element generator = this.getGenerator(this.config);
         if (generator != null) {
             doc.addExtension(generator);

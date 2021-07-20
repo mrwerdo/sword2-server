@@ -14,12 +14,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AtomStatement extends Statement {
-    private String author;
-    private String feedUri;
-    private String title;
-    private String updated;
+    private final String author;
+    private final String feedUri;
+    private final String title;
+    private final String updated;
 
-    public AtomStatement(String feedUri, String author, String title, String updated) {
+    public AtomStatement(final String feedUri, final String author, final String title, final String updated) {
         this.contentType = "application/atom+xml;type=feed";
         this.author = (author != null && !"".equals(author)) ? author : "Unknown";
         this.feedUri = feedUri;
@@ -28,7 +28,7 @@ public class AtomStatement extends Statement {
     }
 
     @Override
-    public void writeTo(Writer out) throws IOException {
+    public void writeTo(final Writer out) throws IOException {
         Abdera abdera = new Abdera();
         Feed feed = abdera.newFeed();
 

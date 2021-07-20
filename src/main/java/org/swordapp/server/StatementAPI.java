@@ -16,14 +16,14 @@ import java.util.Map;
 public class StatementAPI extends SwordAPIEndpoint {
     private static Logger log = LoggerFactory.getLogger(CollectionAPI.class);
 
-    private StatementManager sm;
+    private final StatementManager sm;
 
-    public StatementAPI(StatementManager sm, SwordConfiguration config) {
+    public StatementAPI(final StatementManager sm, final SwordConfiguration config) {
         super(config);
         this.sm = sm;
     }
 
-    public void get(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void get(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         // let the superclass prepare the request/response objects
         super.get(req, resp);
 
@@ -31,12 +31,11 @@ public class StatementAPI extends SwordAPIEndpoint {
         AuthCredentials auth = null;
         try {
             auth = this.getAuthCredentials(req);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             if (e.isRetry()) {
                 String s = "Basic realm=\"SWORD2\"";
                 resp.setHeader("WWW-Authenticate", s);
-                resp.setStatus(401);
+                resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
@@ -72,20 +71,16 @@ public class StatementAPI extends SwordAPIEndpoint {
             resp.getWriter().append(writer.toString());
             resp.getWriter().flush();
 
-        }
-        catch (SwordServerException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
-        }
-        catch (SwordError se) {
+        } catch (SwordError se) {
             this.swordError(req, resp, se);
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new ServletException(e);
-        }
-        catch (SwordAuthException e) {
+        } catch (SwordAuthException e) {
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden
-            resp.sendError(403);
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 }

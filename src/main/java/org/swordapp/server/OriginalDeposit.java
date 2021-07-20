@@ -10,11 +10,11 @@ public class OriginalDeposit extends ResourcePart {
     private String depositedBy;
     private String depositedOnBehalfOf;
 
-    public OriginalDeposit(String uri) {
+    public OriginalDeposit(final String uri) {
         this(uri, new ArrayList<String>(), null, null, null);
     }
 
-    public OriginalDeposit(String uri, List<String> packaging, Date depositedOn, String depositedBy, String depositedOnBehalfOf) {
+    public OriginalDeposit(final String uri, final List<String> packaging, final Date depositedOn, final String depositedBy, final String depositedOnBehalfOf) {
         super(uri);
         this.packaging = packaging;
         this.depositedOn = depositedOn;
@@ -30,7 +30,7 @@ public class OriginalDeposit extends ResourcePart {
         return packaging;
     }
 
-    public void setPackaging(List<String> packaging) {
+    public void setPackaging(final List<String> packaging) {
         this.packaging = packaging;
     }
 
@@ -38,7 +38,7 @@ public class OriginalDeposit extends ResourcePart {
         return depositedOn;
     }
 
-    public void setDepositedOn(Date depositedOn) {
+    public void setDepositedOn(final Date depositedOn) {
         this.depositedOn = depositedOn;
     }
 
@@ -46,7 +46,7 @@ public class OriginalDeposit extends ResourcePart {
         return depositedBy;
     }
 
-    public void setDepositedBy(String depositedBy) {
+    public void setDepositedBy(final String depositedBy) {
         this.depositedBy = depositedBy;
     }
 
@@ -54,7 +54,7 @@ public class OriginalDeposit extends ResourcePart {
         return depositedOnBehalfOf;
     }
 
-    public void setDepositedOnBehalfOf(String depositedOnBehalfOf) {
+    public void setDepositedOnBehalfOf(final String depositedOnBehalfOf) {
         this.depositedOnBehalfOf = depositedOnBehalfOf;
     }
 }
