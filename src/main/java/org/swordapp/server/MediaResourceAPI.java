@@ -99,10 +99,16 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
 
             if (sendBody) {
                 OutputStream out = resp.getOutputStream();
-                InputStream in = resource.getInputStream();
-                this.copyInputToOutput(in, out);
-                out.flush();
-                in.close();
+                try (
+                    InputStream in = resource.getInputStream();
+                ) {
+                    this.copyInputToOutput(in, out);
+                    out.flush();
+                } catch (IOException e) {
+                    // we catch and rethrow here, yet making sure the try-with-resources closes the input stream.
+                    // (The servlet output stream is not opened by us, we may not close it)
+                    throw e;
+                }
             }
         } catch (SwordError se) {
             this.swordError(req, resp, se);

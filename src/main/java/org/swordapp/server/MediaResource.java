@@ -31,11 +31,11 @@ public class MediaResource {
     }
 
     public Date getLastModified() {
-        return lastModified;
+        return lastModified == null ? null : new Date(lastModified.getTime());
     }
 
     public void setLastModified(final Date lastModified) {
-        this.lastModified = lastModified;
+        this.lastModified = new Date(lastModified.getTime());
     }
 
     public boolean isUnpackaged() {

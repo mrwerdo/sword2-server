@@ -11,9 +11,9 @@ import java.util.Map;
 public abstract class Statement {
     // common elements with some default values
     protected String contentType = null;
-    protected List<OriginalDeposit> originalDeposits = new ArrayList<OriginalDeposit>();
-    protected Map<String, String> states = new HashMap<String, String>();
-    protected List<ResourcePart> resources = new ArrayList<ResourcePart>();
+    protected List<OriginalDeposit> originalDeposits = new ArrayList<>();
+    protected Map<String, String> states = new HashMap<>();
+    protected List<ResourcePart> resources = new ArrayList<>();
     protected Date lastModified = new Date();
 
     public abstract void writeTo(Writer out) throws IOException;
@@ -52,10 +52,10 @@ public abstract class Statement {
     }
 
     public Date getLastModified() {
-        return lastModified;
+        return lastModified == null ? null : new Date(lastModified.getTime());
     }
 
     public void setLastModified(final Date lastModified) {
-        this.lastModified = lastModified;
+        this.lastModified = new Date(lastModified.getTime());
     }
 }

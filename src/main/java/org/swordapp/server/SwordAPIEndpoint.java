@@ -155,20 +155,16 @@ public class SwordAPIEndpoint {
         }
 
         String filename = tempDirectory + File.separator + "SWORD-" + UUID.randomUUID().toString();
-
-        try {
+        
+        try (
             InputStream inputstream = deposit.getInputStream();
             OutputStream outputstream = new FileOutputStream(new File(filename));
+        ) {
             final int bufferSize = 1024;
-            try {
-                byte[] buf = new byte[bufferSize];
-                int len;
-                while ((len = inputstream.read(buf)) > 0) {
-                    outputstream.write(buf, 0, len);
-                }
-            } finally {
-                inputstream.close();
-                outputstream.close();
+            byte[] buf = new byte[bufferSize];
+            int len;
+            while ((len = inputstream.read(buf)) > 0) {
+                outputstream.write(buf, 0, len);
             }
         } catch (IOException e) {
             throw new SwordServerException(e);
@@ -250,7 +246,7 @@ public class SwordAPIEndpoint {
             throw new ServletException(e);
         }
     }
-
+    
     protected void cleanup(final Deposit deposit) {
         if (deposit == null) {
             return;
@@ -261,7 +257,9 @@ public class SwordAPIEndpoint {
             return;
         }
 
-        tmp.delete();
+        if (!tmp.delete()) {
+            log.error("Could not delete temporary deposit file " + tmp.getAbsolutePath());
+        }
         deposit.setFile(null);
     }
 

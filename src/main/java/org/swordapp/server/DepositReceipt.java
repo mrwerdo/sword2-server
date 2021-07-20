@@ -42,12 +42,11 @@ public class DepositReceipt {
 
     public Entry getAbderaEntry() {
         Entry abderaEntry = (Entry) this.entry.clone();
-
-        // use the edit iri as the id
-        abderaEntry.setId(this.editIRI.toString());
-
-        // add the Edit IRI Link
+        
         if (this.editIRI != null) {
+            // use the edit iri as the id
+            abderaEntry.setId(this.editIRI.toString());
+            // add the Edit IRI Link
             abderaEntry.addLink(this.editIRI.toString(), "edit");
         }
 
@@ -73,9 +72,9 @@ public class DepositReceipt {
         }
 
         // add the statement URIs
-        for (String statement : this.statements.keySet()) {
-            Link link = abderaEntry.addLink(statement, UriRegistry.REL_STATEMENT);
-            link.setMimeType(this.statements.get(statement));
+        for (Map.Entry<String, String> statement : this.statements.entrySet()) {
+            Link link = abderaEntry.addLink(statement.getKey(), UriRegistry.REL_STATEMENT);
+            link.setMimeType(statement.getValue());
         }
 
         if (this.treatment != null) {
@@ -97,10 +96,10 @@ public class DepositReceipt {
             }
         }
 
-        for (String uri : this.derivedResources.keySet()) {
-            Link link = abderaEntry.addLink(uri, UriRegistry.REL_DERIVED_RESOURCE);
-            if (this.derivedResources.get(uri) != null) {
-                link.setMimeType(this.derivedResources.get(uri));
+        for (Map.Entry<String, String> uri : this.derivedResources.entrySet()) {
+            Link link = abderaEntry.addLink(uri.getKey(), UriRegistry.REL_DERIVED_RESOURCE);
+            if (uri.getValue() != null) {
+                link.setMimeType(uri.getValue());
             }
         }
 
@@ -108,11 +107,11 @@ public class DepositReceipt {
     }
 
     public Date getLastModified() {
-        return lastModified;
+        return lastModified == null ? null : new Date(lastModified.getTime());
     }
 
     public void setLastModified(final Date lastModified) {
-        this.lastModified = lastModified;
+        this.lastModified = new Date(lastModified.getTime());
     }
 
     public boolean isEmpty() {

@@ -17,7 +17,7 @@ public class OriginalDeposit extends ResourcePart {
     public OriginalDeposit(final String uri, final List<String> packaging, final Date depositedOn, final String depositedBy, final String depositedOnBehalfOf) {
         super(uri);
         this.packaging = packaging;
-        this.depositedOn = depositedOn;
+        this.depositedOn = depositedOn == null ? null : new Date(depositedOn.getTime());
         this.depositedBy = depositedBy;
         this.depositedOnBehalfOf = depositedOnBehalfOf;
     }
@@ -35,11 +35,11 @@ public class OriginalDeposit extends ResourcePart {
     }
 
     public Date getDepositedOn() {
-        return depositedOn;
+        return new Date(depositedOn.getTime());
     }
 
     public void setDepositedOn(final Date depositedOn) {
-        this.depositedOn = depositedOn;
+        this.depositedOn = new Date(depositedOn.getTime());
     }
 
     public String getDepositedBy() {

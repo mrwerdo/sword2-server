@@ -8,6 +8,7 @@ import org.apache.jena.vocabulary.RDF;
 import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 public class OREStatement extends Statement {
     private final String remUri;
@@ -74,10 +75,10 @@ public class OREStatement extends Statement {
         }
 
         // now add the state information
-        for (String state : this.states.keySet()) {
-            Resource s = model.createResource(state);
-            if (this.states.get(state) != null) {
-                s.addProperty(model.createProperty(UriRegistry.SWORD_STATE_DESCRIPTION), this.states.get(state));
+        for (Map.Entry<String, String> state : this.states.entrySet()) {
+            Resource s = model.createResource(state.getKey());
+            if (state.getValue() != null) {
+                s.addProperty(model.createProperty(UriRegistry.SWORD_STATE_DESCRIPTION), state.getValue());
             }
             agg.addProperty(model.createProperty(UriRegistry.SWORD_STATE), s);
         }

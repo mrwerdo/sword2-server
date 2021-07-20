@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 public class AtomStatement extends Statement {
     private final String author;
@@ -102,12 +103,12 @@ public class AtomStatement extends Statement {
                 entry.addSimpleExtension(UriRegistry.SWORD_PACKAGING, packaging);
             }
         }
-
+    
         // now at the state as a categories
-        for (String state : this.states.keySet()) {
-            Category cat = feed.addCategory(UriRegistry.SWORD_STATE, state, "State");
-            if (this.states.get(state) != null) {
-                cat.setText(this.states.get(state));
+        for (Map.Entry<String, String> state : this.states.entrySet()) {
+            Category cat = feed.addCategory(UriRegistry.SWORD_STATE, state.getKey(), "State");
+            if (state.getValue() != null) {
+                cat.setText(state.getValue());
             }
         }
 
