@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class StatementAPI extends SwordAPIEndpoint {
             statement.writeTo(writer);
 
             // write the content-md5 header
-            String md5 = ChecksumUtils.generateMD5(writer.toString().getBytes());
+            String md5 = ChecksumUtils.hash(writer.toString());
             resp.setHeader("Content-MD5", md5);
 
             resp.getWriter().append(writer.toString());
@@ -75,8 +74,6 @@ public class StatementAPI extends SwordAPIEndpoint {
             throw new ServletException(e);
         } catch (SwordError se) {
             this.swordError(req, resp, se);
-        } catch (NoSuchAlgorithmException e) {
-            throw new ServletException(e);
         } catch (SwordAuthException e) {
             // authentication actually failed at the server end; not a SwordError, but
             // need to throw a 403 Forbidden

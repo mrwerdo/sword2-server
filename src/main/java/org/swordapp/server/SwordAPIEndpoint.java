@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -154,17 +153,22 @@ public class SwordAPIEndpoint {
             throw new SwordServerException("Store and Check operation requested, but no tempDirectory specified in config");
         }
 
-        String filename = tempDirectory + File.separator + "SWORD-" + UUID.randomUUID().toString();
-        
+        String filename = tempDirectory + File.separator + "SWORD-" + UUID.randomUUID();
+            
         try (
-            InputStream inputstream = deposit.getInputStream();
-            OutputStream outputstream = new FileOutputStream(new File(filename));
+            InputStream inputStream = deposit.getInputStream();
+            OutputStream outputStream = new FileOutputStream(filename);
         ) {
-            final int bufferSize = 1024;
-            byte[] buf = new byte[bufferSize];
-            int len;
-            while ((len = inputstream.read(buf)) > 0) {
-                outputstream.write(buf, 0, len);
+            // get the things we might want to compare
+            String receivedMD5 = ChecksumUtils.hashAndCopy(inputStream, outputStream);
+            log.debug("Received filechecksum: " + receivedMD5);
+            String md5 = deposit.getMd5();
+            log.debug("Received file checksum header: " + md5);
+
+            if ((md5 != null) && (!md5.equals(receivedMD5))) {
+                log.debug("Bad MD5 for file. Aborting with appropriate error message");
+                String msg = "The received MD5 checksum for the deposited file did not match the checksum sent by the deposit client";
+                throw new SwordError(UriRegistry.ERROR_CHECKSUM_MISMATCH, msg);
             }
         } catch (IOException e) {
             throw new SwordServerException(e);
@@ -181,25 +185,8 @@ public class SwordAPIEndpoint {
                     + " bytes but the server will only accept files as large as " + config.getMaxUploadSize() + " bytes)";
             throw new SwordError(UriRegistry.ERROR_MAX_UPLOAD_SIZE_EXCEEDED, msg);
         }
-
-        try {
-            // get the things we might want to compare
-            String receivedMD5 = ChecksumUtils.generateMD5(filename);
-            log.debug("Received filechecksum: " + receivedMD5);
-            String md5 = deposit.getMd5();
-            log.debug("Received file checksum header: " + md5);
-
-            if ((md5 != null) && (!md5.equals(receivedMD5))) {
-                log.debug("Bad MD5 for file. Aborting with appropriate error message");
-                String msg = "The received MD5 checksum for the deposited file did not match the checksum sent by the deposit client";
-                throw new SwordError(UriRegistry.ERROR_CHECKSUM_MISMATCH, msg);
-            }
-            log.debug("Package temporarily stored as: " + filename);
-        } catch (NoSuchAlgorithmException e) {
-            throw new SwordServerException(e);
-        } catch (IOException e) {
-            throw new SwordServerException(e);
-        }
+    
+        log.debug("Package temporarily stored as: " + filename);
     }
 
     protected void addDepositPropertiesFromMultipart(final Deposit deposit, final HttpServletRequest req) throws ServletException, IOException, SwordError {

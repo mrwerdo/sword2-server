@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.net.URLDecoder;
 import java.util.Date;
@@ -162,7 +161,7 @@ public class CollectionAPI extends SwordAPIEndpoint {
                 responseEntry.writeTo(writer);
 
                 // write the content-md5 header
-                String md5 = ChecksumUtils.generateMD5(writer.toString().getBytes());
+                String md5 = ChecksumUtils.hash(writer.toString());
                 resp.setHeader("Content-MD5", md5);
 
                 resp.getWriter().append(writer.toString());
@@ -175,7 +174,7 @@ public class CollectionAPI extends SwordAPIEndpoint {
             this.cleanup(deposit);
 
             this.swordError(req, resp, se);
-        } catch (SwordServerException | NoSuchAlgorithmException e) {
+        } catch (SwordServerException e) {
             throw new ServletException(e);
         } catch (SwordAuthException e) {
             // get rid of any temp files used
