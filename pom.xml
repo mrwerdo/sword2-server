@@ -128,17 +128,6 @@
             <artifactId>jena-core</artifactId>
             <version>${jena.version}</version>
         </dependency>
-        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>${xom.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         
         <dependency>
             <groupId>org.slf4j</groupId>

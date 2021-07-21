@@ -1,14 +1,18 @@
 package org.swordapp.server;
 
-import nu.xom.Attribute;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Serializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.Writer;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -69,63 +73,83 @@ public class ErrorDocument {
         }
     }
 
-    public void writeTo(final Writer out, final SwordConfiguration config) throws IOException, SwordServerException {
-        // do the XML serialisation
-        Element error = new Element("sword:error", UriRegistry.SWORD_TERMS_NAMESPACE);
-        error.addAttribute(new Attribute("href", this.errorUri));
-
-        // write some boiler-plate text into the document
-        Element title = new Element("atom:title", UriRegistry.ATOM_NAMESPACE);
-        title.appendChild("ERROR");
-        Element updates = new Element("atom:updated", UriRegistry.ATOM_NAMESPACE);
-        updates.appendChild(DateTimeFormatter.ISO_INSTANT.format(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
-        Element generator = new Element("atom:generator", UriRegistry.ATOM_NAMESPACE);
-        generator.addAttribute(new Attribute("uri", config.generator()));
-        generator.addAttribute(new Attribute("version", config.generatorVersion()));
-        if (config.administratorEmail() != null) {
-            generator.appendChild(config.administratorEmail());
-        }
-        Element treatment = new Element("sword:treatment", UriRegistry.SWORD_TERMS_NAMESPACE);
-        treatment.appendChild("Processing failed");
-
-        error.appendChild(title);
-        error.appendChild(updates);
-        error.appendChild(generator);
-        error.appendChild(treatment);
-
-        // now add the operational bits
-        if (this.summary != null) {
-            Element summary = new Element("atom:summary", UriRegistry.ATOM_NAMESPACE);
-            summary.appendChild(this.summary);
-            error.appendChild(summary);
-        }
-
-        if (this.verboseDescription != null) {
-            Element vd = new Element("sword:verboseDescription", UriRegistry.SWORD_TERMS_NAMESPACE);
-            vd.appendChild(this.verboseDescription);
-            error.appendChild(vd);
-        }
-
-        String alternate = config.getAlternateUrl();
-        String altContentType = config.getAlternateUrlContentType();
-        if (alternate != null && !"".equals(alternate)) {
-            Element altLink = new Element("atom:link", UriRegistry.ATOM_NAMESPACE);
-            altLink.addAttribute(new Attribute("rel", "alternate"));
-            if (altContentType != null && !"".equals(altContentType)) {
-                altLink.addAttribute(new Attribute("type", altContentType));
-            }
-            altLink.addAttribute(new Attribute("href", alternate));
-            error.appendChild(altLink);
-        }
-
+    public void writeTo(final Writer out, final SwordConfiguration config) throws SwordServerException {
+        
         try {
-            // now get it written out
-            Document doc = new Document(error);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            Serializer serializer = new Serializer(baos, "ISO-8859-1");
-            serializer.write(doc);
-            out.write(baos.toString());
-        } catch (UnsupportedEncodingException e) {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            docFactory.setNamespaceAware(true);
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+    
+            // Root element <sword:error>
+            Document doc = docBuilder.newDocument();
+            Element swordError = doc.createElementNS(UriRegistry.SWORD_TERMS_NAMESPACE, "sword:error");
+            // Make the atom namespace the default (without prefix)
+            swordError.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns", UriRegistry.ATOM_NAMESPACE);
+            swordError.setAttribute("href", this.errorUri);
+            doc.appendChild(swordError);
+    
+            // Write Atom related parts
+            // <sword:error><title>
+            Element title = doc.createElementNS(UriRegistry.ATOM_NAMESPACE, "title");
+            title.setTextContent("ERROR");
+            swordError.appendChild(title);
+    
+            // <sword:error><updated>
+            Element updated = doc.createElementNS(UriRegistry.ATOM_NAMESPACE, "updated");
+            updated.setTextContent(DateTimeFormatter.ISO_INSTANT.format(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            swordError.appendChild(updated);
+    
+            // <sword:error><generator>
+            Element generator = doc.createElementNS(UriRegistry.ATOM_NAMESPACE, "generator");
+            generator.setAttribute("uri", config.generator());
+            generator.setAttribute("version", config.generatorVersion());
+            if (config.administratorEmail() != null) {
+                generator.setTextContent(config.administratorEmail());
+            }
+            swordError.appendChild(generator);
+    
+            // <sword:error><summary>
+            if (this.summary != null) {
+                Element summary = doc.createElementNS(UriRegistry.ATOM_NAMESPACE, "summary");
+                summary.setTextContent(this.summary);
+                swordError.appendChild(summary);
+            }
+            
+            // <sword:error><link rel="alternate">
+            String alternate = config.getAlternateUrl();
+            String altContentType = config.getAlternateUrlContentType();
+            if (alternate != null && !"".equals(alternate)) {
+                Element altLink = doc.createElementNS(UriRegistry.ATOM_NAMESPACE, "link");
+                altLink.setAttribute("rel", "alternate");
+                if (altContentType != null && !"".equals(altContentType)) {
+                    altLink.setAttribute("type", altContentType);
+                }
+                altLink.setAttribute("href", alternate);
+                swordError.appendChild(altLink);
+            }
+            
+            // Write SWORD specific parts
+            // <sword:error><sword:treatment>
+            Element treatment = doc.createElementNS(UriRegistry.SWORD_TERMS_NAMESPACE, "sword:treatment");
+            treatment.setTextContent("Processing failed");
+            swordError.appendChild(treatment);
+            
+            // <sword:error><sword:verboseDescription>
+            if (this.verboseDescription != null) {
+                Element verbose = doc.createElementNS(UriRegistry.SWORD_TERMS_NAMESPACE, "sword:verboseDescription");
+                verbose.setTextContent(this.verboseDescription);
+                swordError.appendChild(verbose);
+            }
+            
+            // Actually write the model to a stream
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            transformer.setOutputProperty(OutputKeys.STANDALONE, "no");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            transformer.transform(source, new StreamResult(out));
+        } catch (TransformerException | ParserConfigurationException e) {
             throw new SwordServerException(e);
         }
     }
