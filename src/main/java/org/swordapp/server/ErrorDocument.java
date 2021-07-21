@@ -10,8 +10,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,8 +76,7 @@ public class ErrorDocument {
         Element title = new Element("atom:title", UriRegistry.ATOM_NAMESPACE);
         title.appendChild("ERROR");
         Element updates = new Element("atom:updated", UriRegistry.ATOM_NAMESPACE);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        updates.appendChild(sdf.format(new Date()));
+        updates.appendChild(DateTimeFormatter.ISO_INSTANT.format(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
         Element generator = new Element("atom:generator", UriRegistry.ATOM_NAMESPACE);
         generator.addAttribute(new Attribute("uri", config.generator()));
         generator.addAttribute(new Attribute("version", config.generatorVersion()));
