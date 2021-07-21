@@ -18,10 +18,21 @@ import java.util.Map;
 
 public class ErrorDocument {
     private String errorUri = null;
-    private Map<String, Integer> errorCodes = new HashMap<String, Integer>();
+    private static final Map<String, Integer> ERROR_CODES = new HashMap<>();
     private String summary = null;
     private String verboseDescription = null;
     private int status;
+    
+    static {
+        // set up the error codes mapping
+        ERROR_CODES.put(UriRegistry.ERROR_BAD_REQUEST, HttpServletResponse.SC_BAD_REQUEST); // bad request
+        ERROR_CODES.put(UriRegistry.ERROR_CHECKSUM_MISMATCH, HttpServletResponse.SC_PRECONDITION_FAILED); // precondition failed
+        ERROR_CODES.put(UriRegistry.ERROR_CONTENT, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE); // unsupported media type
+        ERROR_CODES.put(UriRegistry.ERROR_MEDIATION_NOT_ALLOWED, HttpServletResponse.SC_PRECONDITION_FAILED); // precondition failed
+        ERROR_CODES.put(UriRegistry.ERROR_METHOD_NOT_ALLOWED, HttpServletResponse.SC_METHOD_NOT_ALLOWED); // method not allowed
+        ERROR_CODES.put(UriRegistry.ERROR_TARGET_OWNER_UNKNOWN, HttpServletResponse.SC_FORBIDDEN); // forbidden
+        ERROR_CODES.put(UriRegistry.ERROR_MAX_UPLOAD_SIZE_EXCEEDED, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE); // forbidden
+    }
 
     public ErrorDocument(final String errorUri) {
         this(errorUri, -1, null, null);
@@ -40,15 +51,6 @@ public class ErrorDocument {
     }
 
     public ErrorDocument(final String errorUri, final int status, final String summary, final String verboseDescription) {
-        // set up the error codes mapping
-        this.errorCodes.put(UriRegistry.ERROR_BAD_REQUEST, HttpServletResponse.SC_BAD_REQUEST); // bad request
-        this.errorCodes.put(UriRegistry.ERROR_CHECKSUM_MISMATCH, HttpServletResponse.SC_PRECONDITION_FAILED); // precondition failed
-        this.errorCodes.put(UriRegistry.ERROR_CONTENT, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE); // unsupported media type
-        this.errorCodes.put(UriRegistry.ERROR_MEDIATION_NOT_ALLOWED, HttpServletResponse.SC_PRECONDITION_FAILED); // precondition failed
-        this.errorCodes.put(UriRegistry.ERROR_METHOD_NOT_ALLOWED, HttpServletResponse.SC_METHOD_NOT_ALLOWED); // method not allowed
-        this.errorCodes.put(UriRegistry.ERROR_TARGET_OWNER_UNKNOWN, HttpServletResponse.SC_FORBIDDEN); // forbidden
-        this.errorCodes.put(UriRegistry.ERROR_MAX_UPLOAD_SIZE_EXCEEDED, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE); // forbidden
-
         this.errorUri = errorUri;
         this.summary = summary;
         this.verboseDescription = verboseDescription;
@@ -60,8 +62,8 @@ public class ErrorDocument {
             return this.status;
         }
 
-        if (errorUri != null && this.errorCodes.containsKey(errorUri)) {
-            return this.errorCodes.get(errorUri);
+        if (errorUri != null && ERROR_CODES.containsKey(errorUri)) {
+            return ERROR_CODES.get(errorUri);
         } else {
             return HttpServletResponse.SC_BAD_REQUEST; // bad request
         }
