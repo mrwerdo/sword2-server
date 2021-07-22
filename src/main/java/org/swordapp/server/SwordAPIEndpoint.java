@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -117,7 +118,8 @@ public class SwordAPIEndpoint {
         }
 
         // get the username and password out of the base64 encoded Basic auth string
-        String unencodedCreds = new String(Base64.getDecoder().decode(authBits[1].trim().getBytes()));
+        byte[] base64Creds = authBits[1].trim().getBytes(StandardCharsets.UTF_8);
+        String unencodedCreds = new String(Base64.getDecoder().decode(base64Creds), StandardCharsets.UTF_8);
         String[] userPass = unencodedCreds.split(":", 2);
 
         // did we get a username and password?

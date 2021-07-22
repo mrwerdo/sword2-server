@@ -3,8 +3,8 @@ package org.swordapp.server;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +31,9 @@ public class SwordEntry {
 
     public String toString() {
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            this.entry.writeTo(baos);
-            return baos.toString();
+            StringWriter stringWriter = new StringWriter();
+            this.entry.writeTo(stringWriter);
+            return stringWriter.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
