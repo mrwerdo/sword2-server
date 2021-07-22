@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipUT>false</skipUT>
         <skipIT>true</skipIT>
+        <skipAnalysis>false</skipAnalysis>
         
         <!-- Dependency versions -->
         <servlet-api.version>4.0.4</servlet-api.version>
@@ -148,6 +149,9 @@
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.2.0</version>
+                <configuration>
+                    <skip>${skipAnalysis}</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>spotbugs</id>
@@ -166,6 +170,7 @@
                     <rulesets>
                         <ruleset>pmd.xml</ruleset>
                     </rulesets>
+                    <skip>${skipAnalysis}</skip>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -198,6 +203,7 @@
                     <configLocation>checkstyle.xml</configLocation>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
+                    <skip>${skipAnalysis}</skip>
                 </configuration>
                 <dependencies>
                     <dependency>

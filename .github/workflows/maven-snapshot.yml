@@ -22,8 +22,10 @@ jobs:
                   path: ~/.m2
                   key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
                   restore-keys: ${{ runner.os }}-m2
-            - name: Publish package
-              run: mvn --batch-mode deploy
+            - name: Build, test, verify and publish snapshot
+              run: mvn --batch-mode verify
+            - name: Publish snapshot
+              run: mvn --batch-mode deploy -DskipAnalysis -DskipUT -DskipIT
               env:
                   MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
                   MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
