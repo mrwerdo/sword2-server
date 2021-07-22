@@ -9,17 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ServiceDocumentServletDefault extends SwordServlet {
-    protected ServiceDocumentManager sdm;
-    protected ServiceDocumentAPI api;
+    private static final long serialVersionUID = -5608750960628797123L;
+    protected transient ServiceDocumentAPI api;
 
     public void init() throws ServletException {
         super.init();
 
         // load the service document implementation
-        this.sdm = (ServiceDocumentManager) this.loadImplClass("service-document-impl", false);
+        ServiceDocumentManager sdm = (ServiceDocumentManager) this.loadImplClass("service-document-impl", false);
 
         // load the api
-        this.api = new ServiceDocumentAPI(this.sdm, this.config);
+        this.api = new ServiceDocumentAPI(sdm, this.config);
     }
 
     @Override

@@ -12,24 +12,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CollectionServletDefault extends SwordServlet {
+    private static final long serialVersionUID = 4652441906004204311L;
     private static Logger log = LoggerFactory.getLogger(CollectionServletDefault.class);
-
-    protected CollectionListManager clm = null;
-    protected CollectionDepositManager cdm;
-    protected CollectionAPI api;
+    
+    protected transient CollectionAPI api;
 
     public void init() throws ServletException {
         super.init();
 
         // load the collection list manager implementation
         Object possibleClm = this.loadImplClass("collection-list-impl", true); // allow null
-        this.clm = possibleClm == null ? null : (CollectionListManager) possibleClm;
+        CollectionListManager clm = possibleClm == null ? null : (CollectionListManager) possibleClm;
 
         // load the deposit manager implementation
-        this.cdm = (CollectionDepositManager) this.loadImplClass("collection-deposit-impl", false);
+        CollectionDepositManager cdm = (CollectionDepositManager) this.loadImplClass("collection-deposit-impl", false);
 
         // load the API
-        this.api = new CollectionAPI(this.clm, this.cdm, this.config);
+        this.api = new CollectionAPI(clm, cdm, this.config);
     }
 
     @Override

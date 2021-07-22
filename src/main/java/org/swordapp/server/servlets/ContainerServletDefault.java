@@ -12,23 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ContainerServletDefault extends SwordServlet {
+    private static final long serialVersionUID = 5943438798706617147L;
     private static Logger log = LoggerFactory.getLogger(ContainerServletDefault.class);
-
-    private ContainerManager cm;
-    private ContainerAPI api;
-    private StatementManager sm;
-
+    
+    private transient ContainerAPI api;
+    
     public void init() throws ServletException {
         super.init();
 
         // load the container manager implementation
-        this.cm = (ContainerManager) this.loadImplClass("container-impl", false);
+        ContainerManager cm = (ContainerManager) this.loadImplClass("container-impl", false);
 
         // load the container manager implementation
-        this.sm = (StatementManager) this.loadImplClass("statement-impl", false);
+        StatementManager sm = (StatementManager) this.loadImplClass("statement-impl", false);
 
         // initialise the underlying servlet processor
-        this.api = new ContainerAPI(this.cm, this.sm, this.config);
+        this.api = new ContainerAPI(cm, sm, this.config);
     }
 
     @Override

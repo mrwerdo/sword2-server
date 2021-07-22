@@ -10,19 +10,19 @@ import org.swordapp.server.StatementAPI;
 import org.swordapp.server.StatementManager;
 
 public class StatementServletDefault extends SwordServlet {
+    private static final long serialVersionUID = -3559985225243246804L;
     private static Logger log = LoggerFactory.getLogger(StatementServletDefault.class);
-
-    private StatementManager sm;
-    private StatementAPI statementApi;
+    
+    private transient StatementAPI statementApi;
 
     public void init() throws ServletException {
         super.init();
 
         // load the container manager implementation
-        this.sm = (StatementManager) this.loadImplClass("statement-impl", false);
+        StatementManager sm = (StatementManager) this.loadImplClass("statement-impl", false);
 
         // initialise the underlying servlet processor
-        this.statementApi = new StatementAPI(this.sm, this.config);
+        this.statementApi = new StatementAPI(sm, this.config);
     }
 
     @Override

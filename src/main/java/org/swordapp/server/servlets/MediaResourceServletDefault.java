@@ -11,19 +11,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class MediaResourceServletDefault extends SwordServlet {
+    private static final long serialVersionUID = 3073624304950465741L;
     private static Logger log = LoggerFactory.getLogger(MediaResourceServletDefault.class);
-
-    protected MediaResourceManager mrm;
-    protected MediaResourceAPI api;
+    
+    protected transient MediaResourceAPI api;
 
     public void init() throws ServletException {
         super.init();
 
         // load the Media Resource Manager
-        this.mrm = (MediaResourceManager) this.loadImplClass("media-resource-impl", false);
+        MediaResourceManager mrm = (MediaResourceManager) this.loadImplClass("media-resource-impl", false);
 
         // load the api
-        this.api = new MediaResourceAPI(this.mrm, this.config);
+        this.api = new MediaResourceAPI(mrm, this.config);
     }
 
     @Override
