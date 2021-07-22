@@ -13,6 +13,8 @@
     <properties>
         <!-- Global Maven settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <skipUT>false</skipUT>
+        <skipIT>true</skipIT>
         
         <!-- Dependency versions -->
         <servlet-api.version>4.0.4</servlet-api.version>
@@ -27,6 +29,9 @@
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
         <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
     </properties>
     <scm>
         <developerConnection>scm:git:https://github.com/gdcc/${project.artifactId}</developerConnection>
@@ -72,6 +77,8 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>${maven-dependency-plugin.version}</version>
             </plugin>
+            
+            <!-- Styling, Code Analysis, ... -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -98,6 +105,57 @@
                         <version>8.42</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+    
+            <!-- Tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <skipTests>${skipUT}</skipTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <id>unit-test</id>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/it/**</exclude>
+                            </excludes>
+                            <reportsDirectory>
+                                ${project.build.directory}/test-reports/unit
+                            </reportsDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin.version}</version>
+                <configuration>
+                    <skipITs>${skipIT}</skipITs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <trimStackTrace>false</trimStackTrace>
+                            <includes>
+                                <include>**/it/**</include>
+                            </includes>
+                            <reportsDirectory>
+                                ${project.build.directory}/test-reports/it
+                            </reportsDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
