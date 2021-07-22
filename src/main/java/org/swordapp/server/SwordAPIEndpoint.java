@@ -4,6 +4,7 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
+import org.apache.abdera.parser.ParseException;
 import org.apache.abdera.parser.Parser;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -200,12 +201,7 @@ public class SwordAPIEndpoint {
             String name = this.getContentDispositionValue(contentDisposition, "name");
 
             if ("atom".equals(name)) {
-                InputStream entryPart = item.getInputStream();
-                Abdera abdera = new Abdera();
-                Parser parser = abdera.getParser();
-                Document<Entry> entryDoc = parser.parse(entryPart);
-                Entry entry = entryDoc.getRoot();
-                deposit.setEntry(entry);
+                parseEntryFromInputStream(deposit, item.getInputStream());
             } else if ("payload".equals(name)) {
                 String md5 = item.getHeaders().getHeader("Content-MD5");
                 String packaging = item.getHeaders().getHeader("Packaging");
@@ -271,15 +267,30 @@ public class SwordAPIEndpoint {
         return null;
     }
 
-    protected void addDepositPropertiesFromEntry(final Deposit deposit, final HttpServletRequest req) throws IOException {
-        InputStream entryPart = req.getInputStream();
+    protected void addDepositPropertiesFromEntry(final Deposit deposit, final HttpServletRequest req) throws IOException, SwordError {
+        parseEntryFromInputStream(deposit, req.getInputStream());
+    }
+    
+    /**
+     * Parsing the Entry element from an input Stream (either from the HTTP request or from the multipart upload)
+     * and stuffing it into the given Deposit.
+     * @param deposit - the {@link Deposit} to stuff the {@link Entry} into.
+     * @param entryPart - the {@link InputStream} to read from
+     * @throws SwordError when parsing fails.
+     */
+    private void parseEntryFromInputStream(final Deposit deposit, final InputStream entryPart) throws SwordError {
         Abdera abdera = new Abdera();
         Parser parser = abdera.getParser();
-        Document<Entry> entryDoc = parser.parse(entryPart);
+        Document<Entry> entryDoc = null;
+        try {
+            entryDoc = parser.parse(entryPart);
+        } catch (ParseException ex) {
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Unable to parse SWORD entry", ex);
+        }
         Entry entry = entryDoc.getRoot();
         deposit.setEntry(entry);
     }
-
+    
     protected void addDepositPropertiesFromBinary(final Deposit deposit, final HttpServletRequest req) throws ServletException, IOException, SwordError {
         String contentType = this.getContentType(req);
         String contentDisposition = req.getHeader("Content-Disposition");
