@@ -10,6 +10,7 @@
         Common Server Library with interfaces to be implemented by servers
         wishing to provide SWORD v2 support
     </description>
+    <url>https://github.com/gdcc/sword2-lib</url>
     <properties>
         <!-- Global Maven settings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,6 +46,54 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <developers>
+        <developer>
+            <name>Richard Jones</name>
+            <email>richard@cottagelabs.com</email>
+            <organization>Cottage Labs</organization>
+            <organizationUrl>https://cottagelabs.com</organizationUrl>
+            <roles>
+                <role>original developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Phil Durbin</name>
+            <email>philip_durbin@harvard.edu</email>
+            <organization>IQSS, Harvard</organization>
+            <organizationUrl>https://iq.harvard.edu/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Jan van Mansum</name>
+            <email>jan.van.mansum@dans.knaw.nl</email>
+            <organization>DANS</organization>
+            <organizationUrl>https://dans.knaw.nl/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Richard van Heest</name>
+            <email>richard.van.heest@dans.knaw.nl</email>
+            <organization>DANS</organization>
+            <organizationUrl>https://dans.knaw.nl/</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Oliver Bertuch</name>
+            <email>o.bertuch@fz-juelich.de</email>
+            <organization>Forschungszentrum Jülich GmbH</organization>
+            <organizationUrl>https://fz-juelich.de/en</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+    
     <build>
         <plugins>
             <plugin>
