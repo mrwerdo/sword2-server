@@ -62,7 +62,7 @@ public class SwordCollection {
         }
 
         // add the mediation
-        abderaCollection.addSimpleExtension(UriRegistry.SWORD_MEDIATION, (this.mediation ? "true" : "false"));
+        abderaCollection.addSimpleExtension(UriRegistry.SWORD_MEDIATION, this.mediation ? "true" : "false");
 
         // add the treatment
         if (this.treatment != null) {

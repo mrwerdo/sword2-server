@@ -167,7 +167,7 @@ public class SwordAPIEndpoint {
             String md5 = deposit.getMd5();
             log.debug("Received file checksum header: " + md5);
 
-            if ((md5 != null) && (!md5.equals(receivedMD5))) {
+            if (md5 != null && !md5.equals(receivedMD5)) {
                 log.debug("Bad MD5 for file. Aborting with appropriate error message");
                 String msg = "The received MD5 checksum for the deposited file did not match the checksum sent by the deposit client";
                 throw new SwordError(UriRegistry.ERROR_CHECKSUM_MISMATCH, msg);
@@ -182,7 +182,7 @@ public class SwordAPIEndpoint {
         deposit.setFile(file);
 
         long fLength = file.length(); // in bytes
-        if ((config.getMaxUploadSize() != -1) && (fLength > config.getMaxUploadSize())) {
+        if (config.getMaxUploadSize() != -1 && fLength > config.getMaxUploadSize()) {
             String msg = "The uploaded file exceeded the maximum file size this server will accept (the file is " + fLength
                     + " bytes but the server will only accept files as large as " + config.getMaxUploadSize() + " bytes)";
             throw new SwordError(UriRegistry.ERROR_MAX_UPLOAD_SIZE_EXCEEDED, msg);
