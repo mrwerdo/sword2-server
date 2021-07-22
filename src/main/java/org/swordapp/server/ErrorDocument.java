@@ -20,12 +20,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ErrorDocument {
-    private String errorUri = null;
-    private static final Map<String, Integer> ERROR_CODES = new HashMap<>();
-    private String summary = null;
-    private String verboseDescription = null;
-    private int status;
+public final class ErrorDocument {
+    private final String errorUri;
+    // package private to be accessible in tests
+    static final Map<String, Integer> ERROR_CODES = new HashMap<>();
+    private final String dateUpdated = DateTimeFormatter.ISO_INSTANT.format(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    private final String summary;
+    private final String verboseDescription;
+    private final int status;
     
     static {
         // set up the error codes mapping
@@ -72,6 +74,11 @@ public class ErrorDocument {
             return HttpServletResponse.SC_BAD_REQUEST; // bad request
         }
     }
+    
+    // test use only
+    String getDateUpdated() {
+        return dateUpdated;
+    }
 
     public void writeTo(final Writer out, final SwordConfiguration config) throws SwordServerException {
         
@@ -96,7 +103,7 @@ public class ErrorDocument {
     
             // <sword:error><updated>
             Element updated = doc.createElementNS(UriRegistry.ATOM_NAMESPACE, "updated");
-            updated.setTextContent(DateTimeFormatter.ISO_INSTANT.format(ZonedDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+            updated.setTextContent(this.dateUpdated);
             swordError.appendChild(updated);
     
             // <sword:error><generator>
