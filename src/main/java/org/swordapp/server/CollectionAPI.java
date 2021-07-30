@@ -115,7 +115,12 @@ public class CollectionAPI extends SwordAPIEndpoint {
 
             // According to http://www.ietf.org/rfc/rfc5023.txt Section 9.7.1 The Slug must be the percent encoded
             // UTF-8 byte sequence of the text to use as the value.
-            String slug = URLDecoder.decode(req.getHeader("Slug"), StandardCharsets.UTF_8);
+            // More about this header: https://blog.cdivilly.com/2016/03/01/slug-http-header/
+            // As it's optional, make a nullsafe decode.
+            String slug = null;
+            if (req.getHeader("Slug") != null) {
+                slug = URLDecoder.decode(req.getHeader("Slug"), StandardCharsets.UTF_8);
+            }
             boolean inProgress = this.getInProgress(req);
 
             deposit = new Deposit();
