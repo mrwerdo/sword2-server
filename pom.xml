@@ -37,7 +37,9 @@
         <pmd.version>6.36.0</pmd.version>
     </properties>
     <scm>
-        <developerConnection>scm:git:https://github.com/gdcc/${project.artifactId}</developerConnection>
+        <connection>scm:git:https://github.com/gdcc/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:gdcc/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/gdcc/${project.artifactId}</url>
         <tag>HEAD</tag>
     </scm>
     <licenses>
