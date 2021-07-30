@@ -27,9 +27,9 @@ jobs:
             - name: Build, test, verify
               run: mvn --batch-mode verify
             - name: Check POM metadata for release
-              run: mvn --batch-mode pomchecker:check-maven-central
+              run: mvn pomchecker:check-maven-central
             - name: Sign + Publish release
-              run: mvn --batch-mode -Prelease deploy -DskipAnalysis -DskipUT -DskipIT
+              run: mvn -Prelease deploy -DskipAnalysis -DskipUT -DskipIT
               env:
                   MAVEN_USERNAME: ${{ secrets.DATAVERSEBOT_SONATYPE_USERNAME }}
                   MAVEN_PASSWORD: ${{ secrets.DATAVERSEBOT_SONATYPE_TOKEN }}
