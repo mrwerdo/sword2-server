@@ -24,9 +24,9 @@ jobs:
                   key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
                   restore-keys: ${{ runner.os }}-m2
             - name: Build, test, verify and publish snapshot
-              run: mvn --batch-mode verify
+              run: mvn -B verify
             - name: Publish snapshot
-              run: mvn --batch-mode deploy -DskipAnalysis -DskipUT -DskipIT
+              run: mvn deploy -DskipAnalysis -DskipUT -DskipIT
               env:
                   MAVEN_USERNAME: ${{ secrets.DATAVERSEBOT_SONATYPE_USERNAME }}
                   MAVEN_PASSWORD: ${{ secrets.DATAVERSEBOT_SONATYPE_TOKEN }}

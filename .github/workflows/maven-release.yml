@@ -25,7 +25,7 @@ jobs:
                   key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
                   restore-keys: ${{ runner.os }}-m2
             - name: Build, test, verify
-              run: mvn --batch-mode verify
+              run: mvn -B verify
             - name: Check POM metadata for release
               run: mvn pomchecker:check-maven-central
             - name: Sign + Publish release
