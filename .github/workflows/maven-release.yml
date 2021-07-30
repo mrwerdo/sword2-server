@@ -1,4 +1,4 @@
-name: Snapshot to Maven Central Repository
+name: Release to Maven Central Repository
 on:
     push:
         tags:
