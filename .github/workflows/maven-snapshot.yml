@@ -27,5 +27,5 @@ jobs:
             - name: Publish snapshot
               run: mvn --batch-mode deploy -DskipAnalysis -DskipUT -DskipIT
               env:
-                  MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-                  MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+                  MAVEN_USERNAME: ${{ secrets.DATAVERSEBOT_SONATYPE_USERNAME }}
+                  MAVEN_PASSWORD: ${{ secrets.DATAVERSEBOT_SONATYPE_TOKEN }}
