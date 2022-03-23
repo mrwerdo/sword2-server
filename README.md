@@ -1,7 +1,8 @@
 SWORD 2.0 Server
 ================
 
-This server library is an implementation of the SWORD 2.0 standard defined [here](http://swordapp.org/sword-v2/sword-v2-specifications/)
+This server library is an implementation of the SWORD 2.0 standard defined [here](https://sword.cottagelabs.com/previous-versions-of-sword/sword-v2/sword-v2-specifications/)
+([SWORD 2.0 profile](http://swordapp.github.io/SWORDv2-Profile/SWORDProfile.html))
 
 ## History of this library
 
