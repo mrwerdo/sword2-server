@@ -6,9 +6,9 @@ import org.swordapp.server.CollectionAPI;
 import org.swordapp.server.CollectionDepositManager;
 import org.swordapp.server.CollectionListManager;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CollectionServletDefault extends SwordServlet {
