@@ -204,15 +204,10 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
 
         Deposit deposit = null;
         try {
-            // the first thing to do is determine what the deposit type is:
-            String contentType = this.getContentType(req);
-            boolean isMultipart = contentType.startsWith("multipart/related");
-            String uri = this.getFullUrl(req);
-
             deposit = new Deposit();
 
-            if (isMultipart) {
-                this.addDepositPropertiesFromMultipart(deposit, req);
+            if (this.getContentType(req).startsWith("multipart/related")) {
+                throw new SwordError(UriRegistry.ERROR_METHOD_NOT_ALLOWED, "This server does not support RFC2387 Multipart uploads, to be removed in SWORD v2.1");
             } else {
                 this.addDepositPropertiesFromBinary(deposit, req);
             }
@@ -222,7 +217,7 @@ public class MediaResourceAPI extends SwordAPIEndpoint {
             deposit.setMetadataRelevant(metadataRelevant);
 
             // now send the deposit to the implementation for processing
-            DepositReceipt receipt = this.mrm.addResource(uri, deposit, auth, this.config);
+            DepositReceipt receipt = this.mrm.addResource(this.getFullUrl(req), deposit, auth, this.config);
 
             // prepare and return the response
             IRI location = receipt.getLocation();

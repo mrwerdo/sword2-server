@@ -6,18 +6,14 @@ import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.parser.ParseException;
 import org.apache.abdera.parser.Parser;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.ParameterParser;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -191,46 +186,6 @@ public class SwordAPIEndpoint {
     
         log.debug("Package temporarily stored as: " + filename);
     }
-
-    protected void addDepositPropertiesFromMultipart(final Deposit deposit, final HttpServletRequest req) throws ServletException, IOException, SwordError {
-        // Parse the request for files (using the fileupload commons library)
-        List<FileItem> items = this.getPartsFromRequest(req);
-        for (FileItem item : items) {
-            // find out which part we are looking at
-            String contentDisposition = item.getHeaders().getHeader("Content-Disposition");
-            String name = this.getContentDispositionValue(contentDisposition, "name");
-
-            if ("atom".equals(name)) {
-                parseEntryFromInputStream(deposit, item.getInputStream());
-            } else if ("payload".equals(name)) {
-                String md5 = item.getHeaders().getHeader("Content-MD5");
-                String packaging = item.getHeaders().getHeader("Packaging");
-                String filename = this.getContentDispositionValue(contentDisposition, "filename");
-                if (filename == null || "".equals(filename)) {
-                    throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Filename could not be extracted from Content-Disposition");
-                }
-                String ct = item.getContentType();
-                String mimeType = "application/octet-stream";
-                if (ct != null) {
-                    String[] bits = ct.split(";");
-                    mimeType = bits[0].trim();
-                }
-                InputStream mediaPart = item.getInputStream();
-
-                deposit.setFilename(filename);
-                deposit.setInputStream(mediaPart);
-                deposit.setMimeType(mimeType);
-                deposit.setMd5(md5);
-                deposit.setPackaging(packaging);
-            }
-        }
-
-        try {
-            this.storeAndCheckBinary(deposit, this.config);
-        } catch (SwordServerException e) {
-            throw new ServletException(e);
-        }
-    }
     
     protected void cleanup(final Deposit deposit) {
         if (deposit == null) {
@@ -309,9 +264,14 @@ public class SwordAPIEndpoint {
         InputStream file = req.getInputStream();
 
         // now let's interpret and deal with the headers that we have
-        String filename = this.getContentDispositionValue(contentDisposition, "filename");
-        if (filename == null || "".equals(filename)) {
-            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Filename could not be extracted from Content-Disposition");
+        String filename;
+        try {
+            filename = new ContentDisposition(contentDisposition).getFileName();
+            if ("".equals(filename)) {
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Filename could not be extracted from Content-Disposition");
+            }
+        } catch (java.text.ParseException e) {
+            throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "Filename could not be extracted from Content-Disposition: " + e.getMessage());
         }
 
         deposit.setFilename(filename);
@@ -363,34 +323,6 @@ public class SwordAPIEndpoint {
             resp.getWriter().flush();
         } catch (SwordServerException sse) {
             throw new ServletException(sse);
-        }
-    }
-
-    protected String getContentDispositionValue(final String contentDisposition, final String key) {
-        if (contentDisposition == null || key == null) {
-            return null;
-        }
-
-        ParameterParser parameterParser = new ParameterParser();
-        char separator = ';';
-        Map<String, String> parameters = parameterParser.parse(contentDisposition, separator);
-        return parameters.get(key);
-    }
-
-    protected List<FileItem> getPartsFromRequest(final HttpServletRequest request) throws ServletException {
-        try {
-            // Create a factory for disk-based file items
-            FileItemFactory factory = new DiskFileItemFactory();
-
-            // Create a new file upload handler
-            ServletFileUpload upload = new ServletFileUpload(factory);
-
-            // Parse the request
-            List<FileItem> items = upload.parseRequest(request);
-
-            return items;
-        } catch (FileUploadException e) {
-            throw new ServletException(e);
         }
     }
 

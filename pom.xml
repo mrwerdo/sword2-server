@@ -23,6 +23,7 @@
         
         <!-- Dependency versions -->
         <servlet-api.version>5.0.0</servlet-api.version>
+        <jersey.version>3.0.4</jersey.version>
         <abdera.version>1.1.3</abdera.version>
         <fileupload.version>1.4</fileupload.version>
         <jena.version>4.5.0</jena.version>
@@ -439,6 +440,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-core</artifactId>
             <version>${abdera.version}</version>
@@ -453,11 +459,6 @@
             <artifactId>abdera-parser</artifactId>
             <version>${abdera.version}</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>${fileupload.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>

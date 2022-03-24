@@ -130,7 +130,7 @@ public class CollectionAPI extends SwordAPIEndpoint {
 
             // do the different kinds of deposit details extraction
             if (isMultipart) {
-                this.addDepositPropertiesFromMultipart(deposit, req);
+                throw new SwordError(UriRegistry.ERROR_METHOD_NOT_ALLOWED, "This server does not support RFC2387 Multipart uploads, to be removed in SWORD v2.1");
             } else if (isEntryOnly) {
                 this.addDepositPropertiesFromEntry(deposit, req);
             } else if (isBinaryOnly) {

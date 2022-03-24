@@ -163,10 +163,7 @@ public class ContainerAPI extends SwordAPIEndpoint {
             DepositReceipt receipt;
 
             if (isMultipart) {
-                this.addDepositPropertiesFromMultipart(deposit, req);
-
-                // defer to the implementation layer to update both the metadata and the media resource
-                receipt = this.cm.replaceMetadataAndMediaResource(iri, deposit, auth, this.config);
+                throw new SwordError(UriRegistry.ERROR_METHOD_NOT_ALLOWED, "This server does not support RFC2387 Multipart uploads, to be removed in SWORD v2.1");
             } else if (isEntryOnly) {
                 // check that we have the right content type
                 if (!(contentType.startsWith("application/atom+xml") || contentType.startsWith("application/atom+xml;type=entry"))) {
@@ -179,7 +176,7 @@ public class ContainerAPI extends SwordAPIEndpoint {
                 receipt = this.cm.replaceMetadata(iri, deposit, auth, this.config);
             } else {
                 // some other sort of deposit which is not supported
-                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "PUT to Edit-IRI MUST be a multipart request or an Atom Entry");
+                throw new SwordError(UriRegistry.ERROR_BAD_REQUEST, "PUT to Edit-IRI MUST be an Atom Entry");
             }
 
             // prepare and return the response
