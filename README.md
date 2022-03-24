@@ -7,6 +7,15 @@ This server library is an implementation of the SWORD 2.0 standard defined [here
 The variant hosted in this repository is being used as the library of choice to implement the compliant interface
 for [Dataverse](https://dataverse.org). It also gets pushed to [Maven Central](https://mvnrepository.com/artifact/io.gdcc/sword2-server).
 
+## Important changes
+
+This library does no longer support [RFC2387 type uploads (multipart/related)](dx.doi.org/10.17487/RFC2387)!
+It will present users an error message, telling them to use Atom instead.
+
+Support for this type of uploads was broken for a long time and did not make it into SWORD v3.
+[It was tagged for removal for a SWORD v2.1 spec](http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html),
+which never happened.
+
 ## History of this library
 
 1. This library has been develop by @richard-jonnes and @bmckinney at https://github.com/swordapp/JavaServer2.0 first.
