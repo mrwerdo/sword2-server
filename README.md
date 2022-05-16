@@ -9,12 +9,17 @@ for [Dataverse](https://dataverse.org). It also gets pushed to [Maven Central](h
 
 ## Important changes
 
+### Removed `multipart/related` support
 This library does no longer support [RFC2387 type uploads (multipart/related)](dx.doi.org/10.17487/RFC2387)!
 It will present users an error message, telling them to use Atom instead.
 
 Support for this type of uploads was broken for a long time and did not make it into SWORD v3.
 [It was tagged for removal for a SWORD v2.1 spec](http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html),
 which never happened.
+
+### Requires Jakarta EE 9+
+This library now uses Jakarta EE Servlet API 5+ contained in Jakarta EE 9 or newer. Implementing applications should use
+these namespace-shifted libs, too. Your mileage may vary, depending on your application servers possibilities.
 
 ## History of this library
 
