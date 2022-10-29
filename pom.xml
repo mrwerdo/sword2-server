@@ -41,7 +41,7 @@
         <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
         <maven-gpg-plugin>3.0.1</maven-gpg-plugin>
         <dependency-check-maven.version>7.3.0</dependency-check-maven.version>
-        <pmd.version>6.49.0</pmd.version>
+        <pmd.version>6.51.0</pmd.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/gdcc/${project.artifactId}.git</connection>
