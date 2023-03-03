@@ -4,6 +4,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -150,6 +151,10 @@ public final class ErrorDocument {
             
             // Actually write the model to a stream
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            // Prohibit the use of all protocols by external entities (we don't here, but it's good practice anyway)
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+            
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
             transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
