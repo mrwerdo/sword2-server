@@ -384,6 +384,7 @@ public class SwordAPIEndpoint {
 
             // Create a new file upload handler
             ServletFileUpload upload = new ServletFileUpload(factory);
+            upload.setFileCountMax(config.getMaxUploadFiles());
 
             // Parse the request
             List<FileItem> items = upload.parseRequest(request);

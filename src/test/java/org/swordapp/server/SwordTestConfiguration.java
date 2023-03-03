@@ -41,6 +41,11 @@ public class SwordTestConfiguration implements SwordConfiguration {
         return 1024;
     }
     
+    @Override
+    public int getMaxUploadFiles() {
+        return 1024;
+    }
+    
     public String getAlternateUrl() {
         return "https://example.org";
     }
