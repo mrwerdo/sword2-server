@@ -56,9 +56,9 @@ public final class ChecksumUtils {
         
         try (
             DigestOutputStream digestStream = new DigestOutputStream(output, md);
-        ) {
             ReadableByteChannel in = Channels.newChannel(input);
             WritableByteChannel out = Channels.newChannel(digestStream);
+        ) {
             ByteBuffer buffer = ByteBuffer.allocate(LARGE_BUFFER);
         
             while (in.read(buffer) != -1) {
