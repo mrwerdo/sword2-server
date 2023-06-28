@@ -1,6 +1,9 @@
-name: Pull Request Verification and Security Scan
+name: Branch Push Verification and Security Scan
 on:
-    pull_request:
+    push:
+        branches:
+            - main
+            - jakarta
 jobs:
     verify:
         runs-on: ubuntu-latest
@@ -28,16 +31,8 @@ jobs:
                   path: ~/.m2
                   key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
                   restore-keys: ${{ runner.os }}-m2
-            - name: Build, test, verify and send to Sonarcloud
+            - name: Scan with Sonarcloud
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
               run: mvn -B -Pcoverage -Djdk.version=${{ matrix.java }} verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-            - name: Scan with OWASP
-              if: always() # do not skip this step if Sonarcloud/verify fails the mvn build
-              run: mvn -B -Powasp dependency-check:check
-            - name: Upload scan results as SARIF report to GitHub Security Tab
-              uses: github/codeql-action/upload-sarif@v2
-              if: always() # do not skip this step if OWASP fails the mvn build
-              with:
-                  sarif_file: target/dependency-check-report.sarif

@@ -22,27 +22,27 @@
         <jdk.version>11</jdk.version>
         
         <!-- Dependency versions -->
-        <servlet-api.version>5.0.0</servlet-api.version>
+        <servlet-api.version>6.0.0</servlet-api.version>
         <jersey.version>3.0.4</jersey.version>
         <abdera.version>1.1.3</abdera.version>
-        <fileupload.version>1.4</fileupload.version>
-        <jena.version>4.5.0</jena.version>
+        <fileupload.version>1.5</fileupload.version>
+        <jena.version>4.7.0</jena.version>
         <slf4j.version>1.7.36</slf4j.version>
         
         <!-- Transitive dependency versions -->
         <io.version>2.11.0</io.version>
     
         <!-- Official Maven Plugins -->
-        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
-        <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
-        <maven-site-plugin.version>3.12.0</maven-site-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.0.0-M6</maven-failsafe-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
+        <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
         <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
         <maven-gpg-plugin>3.0.1</maven-gpg-plugin>
-        <dependency-check-maven.version>7.1.0</dependency-check-maven.version>
-        <pmd.version>6.45.0</pmd.version>
+        <dependency-check-maven.version>8.3.1</dependency-check-maven.version>
+        <pmd.version>6.55.0</pmd.version>
     </properties>
     <scm>
         <connection>scm:git:https://github.com/gdcc/${project.artifactId}.git</connection>
@@ -157,7 +157,7 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.6.0.0</version>
+                <version>4.7.3.5</version>
                 <configuration>
                     <skip>${skipAnalysis}</skip>
                     <excludeFilterFile>spotbugsExcludeFilter.xml</excludeFilterFile>
@@ -175,7 +175,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.16.0</version>
+                <version>3.20.0</version>
                 <configuration>
                     <rulesets>
                         <ruleset>pmd.xml</ruleset>
@@ -208,7 +208,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.3.0</version>
                 <configuration>
                     <configLocation>checkstyle.xml</configLocation>
                     <encoding>UTF-8</encoding>
@@ -219,7 +219,7 @@
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>10.2</version>
+                        <version>10.12.1</version>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -249,9 +249,6 @@
                             <excludes>
                                 <exclude>**/it/**</exclude>
                             </excludes>
-                            <reportsDirectory>
-                                ${project.build.directory}/test-reports/unit
-                            </reportsDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -276,9 +273,6 @@
                             <includes>
                                 <include>**/it/**</include>
                             </includes>
-                            <reportsDirectory>
-                                ${project.build.directory}/test-reports/it
-                            </reportsDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -298,12 +292,12 @@
             <plugin>
                 <groupId>org.kordamp.maven</groupId>
                 <artifactId>pomchecker-maven-plugin</artifactId>
-                <version>1.2.0</version>
+                <version>1.8.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.1</version>
             </plugin>
         </plugins>
     </build>
@@ -330,7 +324,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.4.0</version>
+                        <version>3.5.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -360,7 +354,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>flatten-maven-plugin</artifactId>
-                        <version>1.2.7</version>
+                        <version>1.5.0</version>
                         <configuration>
                             <updatePomFile>true</updatePomFile>
                             <flattenMode>oss</flattenMode>
@@ -413,6 +407,54 @@
                                 <goals>
                                     <goal>check</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>coverage</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>gdcc</sonar.organization>
+                <sonar.projectKey>gdcc_sword2</sonar.projectKey>
+                <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+                <jacoco.version>0.8.8</jacoco.version>
+                <sonar.version>3.9.1.2184</sonar.version>
+            </properties>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.sonarsource.scanner.maven</groupId>
+                            <artifactId>sonar-maven-plugin</artifactId>
+                            <version>${sonar.version}</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco.version}</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>report</id>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                                <configuration>
+                                    <formats>
+                                        <format>XML</format>
+                                    </formats>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -480,7 +522,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
