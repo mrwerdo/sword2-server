@@ -17,15 +17,16 @@ Support for this type of uploads was broken for a long time and did not make it 
 [It was tagged for removal for a SWORD v2.1 spec](http://www.mail-archive.com/sword-app-tech@lists.sourceforge.net/msg00327.html),
 which never happened.
 
-### Requires Jakarta EE 9+
-This library now uses Jakarta EE Servlet API 5+ contained in Jakarta EE 9 or newer. Implementing applications should use
-these namespace-shifted libs, too. Your mileage may vary, depending on your application servers possibilities.
+### Requires Jakarta EE 10+
+This library uses Jakarta EE Servlet API 6+ contained in Jakarta EE 10 or newer. Implementing applications should use
+these namespace-shifted libs, too. Your mileage may vary, depending on your application server's possibilities.
+
+### Requires Java 17
+This library requires Java 17.
 
 ## History of this library
 
 1. This library has been develop by @richard-jonnes and @bmckinney at https://github.com/swordapp/JavaServer2.0 first.
-2. As development has been staled, DANS-KNAW took as part of project EASY at https://github.com/DANS-KNAW/easy-sword2-lib
+2. As development has been stalled, DANS-KNAW took as part of project EASY at https://github.com/DANS-KNAW/easy-sword2-lib
 3. MyCoRe project forked and maintain their own version with interesting changes. https://github.com/MyCoRe-Org/easy-sword2-lib
-4. IQSS needed a fix in this library, so they currently have their own fork at https://github.com/IQSS/swordv2-java-server-library
-   This project aims to replace that fork and provide a version with updated dependencies. It has been replaced with
-   releases from this repo in the meantime.
+4. IQSS needed a fix in the original library and has switched from their own fork at https://github.com/IQSS/swordv2-java-server-library to this fork.
