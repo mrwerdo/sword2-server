@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.swordapp.server.MediaResourceAPI;
 import org.swordapp.server.MediaResourceManager;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class MediaResourceServletDefault extends SwordServlet {

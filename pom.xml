@@ -3,7 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.gdcc</groupId>
     <artifactId>sword2-server</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <!--Leave -SNAPSHOT in the version. It will be removed by Maven Release Plugin: https://maven.apache.org/maven-release/maven-release-plugin/-->
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>SWORD v2 Common Server Library (forked)</name>
     <description>
@@ -19,10 +20,11 @@
         <skipAnalysis>false</skipAnalysis>
         <!-- Key 2DFF887456235B4550B857DFBAFC446FC031F36B for Dataverse Bot <dataversebot@gdcc.io> expiring 2024-07-29 -->
         <gpg.keyname>0xC031F36B</gpg.keyname>
-        <jdk.version>11</jdk.version>
+        <jdk.version>17</jdk.version>
         
         <!-- Dependency versions -->
-        <servlet-api.version>4.0.4</servlet-api.version>
+        <servlet-api.version>6.0.0</servlet-api.version>
+        <jersey.version>3.0.4</jersey.version>
         <abdera.version>1.1.3</abdera.version>
         <fileupload.version>1.5</fileupload.version>
         <jena.version>4.9.0</jena.version>
@@ -481,6 +483,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.abdera</groupId>
             <artifactId>abdera-core</artifactId>
             <version>${abdera.version}</version>
@@ -495,11 +502,6 @@
             <artifactId>abdera-parser</artifactId>
             <version>${abdera.version}</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>${fileupload.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>

@@ -7,9 +7,9 @@ import org.apache.abdera.model.Feed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -130,7 +130,7 @@ public class CollectionAPI extends SwordAPIEndpoint {
 
             // do the different kinds of deposit details extraction
             if (isMultipart) {
-                this.addDepositPropertiesFromMultipart(deposit, req);
+                throw new SwordError(UriRegistry.ERROR_METHOD_NOT_ALLOWED, "This server does not support RFC2387 Multipart uploads, to be removed in SWORD v2.1");
             } else if (isEntryOnly) {
                 this.addDepositPropertiesFromEntry(deposit, req);
             } else if (isBinaryOnly) {

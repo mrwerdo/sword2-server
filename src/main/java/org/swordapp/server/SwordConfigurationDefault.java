@@ -40,12 +40,7 @@ public class SwordConfigurationDefault implements SwordConfiguration {
     public int getMaxUploadSize() {
         return -1;
     }
-    
-    @Override
-    public int getMaxUploadFiles() {
-        return -1;
-    }
-    
+
     public String getAlternateUrl() {
         return null;
     }
